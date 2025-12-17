@@ -1,0 +1,398 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { GovHeader } from "@/components/shared/GovHeader";
+import { Footer } from "@/components/shared/Footer";
+import { StatsCard } from "@/components/shared/StatsCard";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import {
+  Building2,
+  Users,
+  FileText,
+  AlertTriangle,
+  Map,
+  TrendingUp,
+  Clock,
+  CheckCircle2,
+  Eye,
+  Shield,
+  Activity,
+  BarChart3,
+  PieChart,
+} from "lucide-react";
+
+export default function AdminDashboard() {
+  const navigate = useNavigate();
+  const [language, setLanguage] = useState<"en" | "mr">("en");
+
+  const stats = {
+    totalProperties: 10542,
+    activeListings: 7823,
+    registeredTenants: 52341,
+    registeredLandlords: 8234,
+    activeAgreements: 25421,
+    pendingVerifications: 234,
+    openGrievances: 45,
+    resolvedGrievances: 1234,
+  };
+
+  const districtData = [
+    { name: "Mumbai City", properties: 3245, occupancy: 78 },
+    { name: "Mumbai Suburban", properties: 2567, occupancy: 82 },
+    { name: "Thane", properties: 1823, occupancy: 75 },
+    { name: "Pune", properties: 1456, occupancy: 85 },
+    { name: "Nagpur", properties: 876, occupancy: 68 },
+  ];
+
+  const recentActivities = [
+    { id: 1, action: "New property listed", user: "Amit Patel", time: "5 min ago", type: "property" },
+    { id: 2, action: "Agreement signed", user: "Rahul Sharma", time: "12 min ago", type: "agreement" },
+    { id: 3, action: "Grievance resolved", user: "Admin Team", time: "25 min ago", type: "grievance" },
+    { id: 4, action: "Verification completed", user: "Priya Desai", time: "1 hour ago", type: "verification" },
+    { id: 5, action: "New tenant registered", user: "Vikram Singh", time: "2 hours ago", type: "user" },
+  ];
+
+  const pendingApprovals = [
+    { id: "1", type: "Property", name: "2 BHK Bandra West", submittedBy: "Amit Patel", date: "Dec 12, 2024" },
+    { id: "2", type: "Landlord", name: "Priya Enterprises", submittedBy: "Priya Desai", date: "Dec 11, 2024" },
+    { id: "3", type: "Property", name: "1 RK Thane West", submittedBy: "Vikram Singh", date: "Dec 10, 2024" },
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <GovHeader
+        userName="Admin Officer"
+        userRole="admin"
+        onLanguageChange={setLanguage}
+        currentLanguage={language}
+      />
+
+      <main className="flex-1 py-8">
+        <div className="container mx-auto px-4">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+                Admin Dashboard
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                Maharashtra Rental Housing Portal - Overview
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="govOutline" onClick={() => navigate("/admin/map")}>
+                <Map className="h-4 w-4 mr-2" />
+                GIS View
+              </Button>
+              <Button onClick={() => navigate("/admin/reports")}>
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Reports
+              </Button>
+            </div>
+          </div>
+
+          {/* Primary Stats */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <StatsCard
+              title="Total Properties"
+              value={stats.totalProperties.toLocaleString()}
+              subtitle={`${stats.activeListings.toLocaleString()} active listings`}
+              icon={Building2}
+              trend={{ value: 8, isPositive: true }}
+            />
+            <StatsCard
+              title="Registered Users"
+              value={(stats.registeredTenants + stats.registeredLandlords).toLocaleString()}
+              subtitle={`${stats.registeredTenants.toLocaleString()} tenants`}
+              icon={Users}
+              variant="primary"
+            />
+            <StatsCard
+              title="Active Agreements"
+              value={stats.activeAgreements.toLocaleString()}
+              subtitle="Digital rental agreements"
+              icon={FileText}
+              variant="accent"
+            />
+            <StatsCard
+              title="Pending Actions"
+              value={stats.pendingVerifications + stats.openGrievances}
+              subtitle="Require attention"
+              icon={AlertTriangle}
+            />
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Quick Metrics */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Platform Metrics</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Tabs defaultValue="overview">
+                    <TabsList className="grid w-full grid-cols-3">
+                      <TabsTrigger value="overview">Overview</TabsTrigger>
+                      <TabsTrigger value="districts">Districts</TabsTrigger>
+                      <TabsTrigger value="trends">Trends</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="overview" className="mt-4">
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="p-4 rounded-lg bg-muted/50">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-muted-foreground">Occupancy Rate</span>
+                            <span className="text-lg font-bold text-success">78%</span>
+                          </div>
+                          <Progress value={78} className="h-2" />
+                        </div>
+                        <div className="p-4 rounded-lg bg-muted/50">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-muted-foreground">Verification Rate</span>
+                            <span className="text-lg font-bold text-info">92%</span>
+                          </div>
+                          <Progress value={92} className="h-2" />
+                        </div>
+                        <div className="p-4 rounded-lg bg-muted/50">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-muted-foreground">Grievance Resolution</span>
+                            <span className="text-lg font-bold text-warning">85%</span>
+                          </div>
+                          <Progress value={85} className="h-2" />
+                        </div>
+                        <div className="p-4 rounded-lg bg-muted/50">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-muted-foreground">Agreement Completion</span>
+                            <span className="text-lg font-bold text-primary">94%</span>
+                          </div>
+                          <Progress value={94} className="h-2" />
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="districts" className="mt-4">
+                      <div className="space-y-3">
+                        {districtData.map((district) => (
+                          <div
+                            key={district.name}
+                            className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                            onClick={() => navigate(`/admin/districts/${district.name.toLowerCase().replace(" ", "-")}`)}
+                          >
+                            <div>
+                              <p className="font-medium">{district.name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {district.properties.toLocaleString()} properties
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-semibold">{district.occupancy}%</p>
+                              <p className="text-xs text-muted-foreground">Occupancy</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="trends" className="mt-4">
+                      <div className="h-48 flex items-center justify-center bg-muted/50 rounded-lg">
+                        <div className="text-center text-muted-foreground">
+                          <TrendingUp className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                          <p>Trend visualization coming soon</p>
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </CardContent>
+              </Card>
+
+              {/* Pending Approvals */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg">Pending Approvals</CardTitle>
+                      <CardDescription>Items requiring verification</CardDescription>
+                    </div>
+                    <Button variant="ghost" size="sm" onClick={() => navigate("/admin/approvals")}>
+                      View All
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {pendingApprovals.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center justify-between p-4 rounded-lg border hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                            item.type === "Property" ? "bg-primary/10" : "bg-accent/10"
+                          }`}>
+                            {item.type === "Property" ? (
+                              <Building2 className="h-5 w-5 text-primary" />
+                            ) : (
+                              <Users className="h-5 w-5 text-accent" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-medium">{item.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {item.type} • by {item.submittedBy} • {item.date}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button variant="success" size="sm">
+                            Approve
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* GIS Map Preview */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg">Property Distribution</CardTitle>
+                      <CardDescription>GIS Map View of Maharashtra</CardDescription>
+                    </div>
+                    <Button variant="govOutline" size="sm" onClick={() => navigate("/admin/map")}>
+                      <Map className="h-4 w-4 mr-1" />
+                      Full Map
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 bg-muted/50 rounded-lg flex items-center justify-center relative overflow-hidden">
+                    {/* Placeholder for map */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-info/5" />
+                    <div className="text-center z-10">
+                      <Map className="h-16 w-16 text-muted-foreground/50 mx-auto mb-3" />
+                      <p className="text-muted-foreground">Interactive GIS Map</p>
+                      <p className="text-sm text-muted-foreground">Click to view full map</p>
+                    </div>
+                    {/* Mock map markers */}
+                    <div className="absolute top-1/4 left-1/3 w-3 h-3 bg-primary rounded-full animate-pulse" />
+                    <div className="absolute top-1/3 left-1/2 w-4 h-4 bg-accent rounded-full animate-pulse" />
+                    <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-success rounded-full animate-pulse" />
+                    <div className="absolute bottom-1/3 right-1/3 w-3 h-3 bg-info rounded-full animate-pulse" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Quick Stats */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Quick Stats</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded bg-warning-light flex items-center justify-center">
+                        <Clock className="h-4 w-4 text-warning" />
+                      </div>
+                      <span className="text-sm">Pending Verifications</span>
+                    </div>
+                    <span className="font-semibold">{stats.pendingVerifications}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded bg-destructive-light flex items-center justify-center">
+                        <AlertTriangle className="h-4 w-4 text-destructive" />
+                      </div>
+                      <span className="text-sm">Open Grievances</span>
+                    </div>
+                    <span className="font-semibold">{stats.openGrievances}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded bg-success-light flex items-center justify-center">
+                        <CheckCircle2 className="h-4 w-4 text-success" />
+                      </div>
+                      <span className="text-sm">Resolved This Month</span>
+                    </div>
+                    <span className="font-semibold">{stats.resolvedGrievances}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Recent Activity */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">Recent Activity</CardTitle>
+                    <Activity className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {recentActivities.map((activity) => (
+                      <div key={activity.id} className="flex items-start gap-3">
+                        <div className={`w-2 h-2 rounded-full mt-2 ${
+                          activity.type === "property" ? "bg-primary" :
+                          activity.type === "agreement" ? "bg-success" :
+                          activity.type === "grievance" ? "bg-warning" :
+                          "bg-info"
+                        }`} />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">{activity.action}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {activity.user} • {activity.time}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* System Health */}
+              <Card variant="success">
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Shield className="h-8 w-8 text-success" />
+                    <div>
+                      <h3 className="font-semibold">System Status</h3>
+                      <p className="text-sm text-muted-foreground">All systems operational</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">API Status</span>
+                      <span className="text-success font-medium">Online</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Database</span>
+                      <span className="text-success font-medium">Healthy</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Last Sync</span>
+                      <span className="text-muted-foreground">2 min ago</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
