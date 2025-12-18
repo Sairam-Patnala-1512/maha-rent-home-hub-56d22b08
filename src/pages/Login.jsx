@@ -1,66 +1,68 @@
-import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { GovHeader } from "@/components/shared/GovHeader";
-import { Footer } from "@/components/shared/Footer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Phone, ArrowRight, Users, Building2, CheckCircle2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { GovHeader } from '@/components/shared/GovHeader';
+import { Footer } from '@/components/shared/Footer';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Shield, ArrowRight, Users, Building2, CheckCircle2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { mockLogin } from '@/store/slices/userSlice';
 
 export default function Login() {
   const [searchParams] = useSearchParams();
-  const role = searchParams.get("role") || "tenant";
+  const role = searchParams.get('role') || 'tenant';
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { toast } = useToast();
   
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const roleConfig = {
     tenant: {
-      title: "Tenant Login",
+      title: 'Tenant Login',
       icon: Users,
-      color: "primary",
-      dashboard: "/tenant/dashboard",
+      color: 'primary',
+      dashboard: '/tenant/dashboard',
     },
     landlord: {
-      title: "Landlord Login",
+      title: 'Landlord Login',
       icon: Building2,
-      color: "accent",
-      dashboard: "/landlord/dashboard",
+      color: 'accent',
+      dashboard: '/landlord/dashboard',
     },
     admin: {
-      title: "Admin Login",
+      title: 'Admin Login',
       icon: Shield,
-      color: "success",
-      dashboard: "/admin/dashboard",
+      color: 'success',
+      dashboard: '/admin/dashboard',
     },
   };
 
-  const config = roleConfig[role as keyof typeof roleConfig] || roleConfig.tenant;
+  const config = roleConfig[role] || roleConfig.tenant;
 
   const handleSendOtp = async () => {
     if (phone.length !== 10) {
       toast({
-        title: "Invalid Phone Number",
-        description: "Please enter a valid 10-digit phone number",
-        variant: "destructive",
+        title: 'Invalid Phone Number',
+        description: 'Please enter a valid 10-digit phone number',
+        variant: 'destructive',
       });
       return;
     }
 
     setIsLoading(true);
-    // Simulate OTP sending
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setOtpSent(true);
     setIsLoading(false);
     toast({
-      title: "OTP Sent",
+      title: 'OTP Sent',
       description: `OTP has been sent to +91 ${phone}`,
     });
   };
@@ -68,20 +70,37 @@ export default function Login() {
   const handleVerifyOtp = async () => {
     if (otp.length !== 6) {
       toast({
-        title: "Invalid OTP",
-        description: "Please enter the 6-digit OTP",
-        variant: "destructive",
+        title: 'Invalid OTP',
+        description: 'Please enter the 6-digit OTP',
+        variant: 'destructive',
       });
       return;
     }
 
     setIsLoading(true);
-    // Simulate OTP verification
     await new Promise((resolve) => setTimeout(resolve, 1500));
+    
+    // Mock login with Redux
+    dispatch(mockLogin({
+      user: {
+        id: '1',
+        name: 'Rahul Sharma',
+        phone: phone,
+        email: 'rahul.sharma@email.com',
+      },
+      role: role,
+      verificationStatus: {
+        ekyc: 'verified',
+        digilocker: 'verified',
+        policeVerification: 'pending',
+        profileCompletion: 85,
+      },
+    }));
+    
     setIsLoading(false);
     toast({
-      title: "Login Successful",
-      description: "Welcome to the Maharashtra Rental Housing Portal",
+      title: 'Login Successful',
+      description: 'Welcome to the Maharashtra Rental Housing Portal',
     });
     navigate(config.dashboard);
   };
@@ -93,7 +112,6 @@ export default function Login() {
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <Card variant="elevated" className="overflow-hidden">
-            {/* Role indicator strip */}
             <div className={`h-1.5 bg-${config.color}`} />
             
             <CardHeader className="text-center pb-2">
@@ -127,7 +145,7 @@ export default function Login() {
                             type="tel"
                             placeholder="Enter 10-digit mobile number"
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                            onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                             className="pl-12"
                             maxLength={10}
                           />
@@ -166,7 +184,7 @@ export default function Login() {
                           type="text"
                           placeholder="Enter 6-digit OTP"
                           value={otp}
-                          onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                          onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                           maxLength={6}
                           className="text-center text-lg tracking-widest"
                         />
@@ -193,7 +211,7 @@ export default function Login() {
                       <button
                         onClick={() => {
                           setOtpSent(false);
-                          setOtp("");
+                          setOtp('');
                         }}
                         className="w-full text-sm text-muted-foreground hover:text-foreground"
                       >
@@ -249,9 +267,8 @@ export default function Login() {
             </CardContent>
           </Card>
 
-          {/* Help text */}
           <p className="text-center text-sm text-muted-foreground mt-6">
-            Having trouble logging in?{" "}
+            Having trouble logging in?{' '}
             <a href="/grievance" className="text-primary hover:underline">
               Contact Support
             </a>
