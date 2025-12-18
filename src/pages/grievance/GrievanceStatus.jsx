@@ -26,17 +26,16 @@ import { cn } from "@/lib/utils";
 export default function GrievanceStatus() {
   const navigate = useNavigate();
   const { grievanceId } = useParams();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
+  const [language, setLanguage] = useState("en");
   const [newComment, setNewComment] = useState("");
 
-  // Mock grievance data
   const grievance = {
     id: grievanceId || "GRV001",
     subject: "Delay in Application Processing",
     description: "My application APP001 has been pending for more than 10 days. I submitted all the required documents and completed my eKYC verification. However, there has been no update on my application status. I need to move into the property by the end of this month and this delay is causing significant inconvenience.",
     category: "Application",
     priority: "medium",
-    status: "in-review" as const,
+    status: "in-review",
     createdAt: "Dec 15, 2024 - 10:30 AM",
     lastUpdate: "Dec 17, 2024 - 03:45 PM",
     assignedTo: "Support Team - Level 2",
@@ -74,7 +73,7 @@ export default function GrievanceStatus() {
     ],
   };
 
-  const getTimelineIcon = (type: string) => {
+  const getTimelineIcon = (type) => {
     switch (type) {
       case "created":
         return <AlertCircle className="h-5 w-5 text-info" />;
@@ -89,7 +88,7 @@ export default function GrievanceStatus() {
     }
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority) => {
     switch (priority) {
       case "high":
         return "destructive";
@@ -102,7 +101,6 @@ export default function GrievanceStatus() {
 
   const handleAddComment = () => {
     if (!newComment.trim()) return;
-    // Mock adding comment
     setNewComment("");
   };
 
@@ -117,7 +115,6 @@ export default function GrievanceStatus() {
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4 max-w-5xl">
-          {/* Header */}
           <div className="mb-8">
             <Button variant="ghost" size="sm" onClick={() => navigate("/grievance")} className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -139,9 +136,7 @@ export default function GrievanceStatus() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Grievance Details */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Grievance Details</CardTitle>
@@ -168,7 +163,6 @@ export default function GrievanceStatus() {
                 </CardContent>
               </Card>
 
-              {/* Timeline */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Activity Timeline</CardTitle>
@@ -209,7 +203,6 @@ export default function GrievanceStatus() {
                 </CardContent>
               </Card>
 
-              {/* Add Comment */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Add Comment</CardTitle>
@@ -234,9 +227,7 @@ export default function GrievanceStatus() {
               </Card>
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Status Card */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Status Overview</CardTitle>
@@ -248,7 +239,7 @@ export default function GrievanceStatus() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Priority</span>
-                    <Badge variant={getPriorityColor(grievance.priority) as any}>
+                    <Badge variant={getPriorityColor(grievance.priority)}>
                       {grievance.priority}
                     </Badge>
                   </div>
@@ -259,7 +250,6 @@ export default function GrievanceStatus() {
                 </CardContent>
               </Card>
 
-              {/* Details Card */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Details</CardTitle>
@@ -304,7 +294,6 @@ export default function GrievanceStatus() {
                 </CardContent>
               </Card>
 
-              {/* Quick Actions */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Actions</CardTitle>
@@ -320,7 +309,6 @@ export default function GrievanceStatus() {
                 </CardContent>
               </Card>
 
-              {/* Expected Resolution */}
               <Card variant="info">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">

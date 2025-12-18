@@ -38,12 +38,11 @@ const applicationSteps = [
 export default function ApplicationTracker() {
   const navigate = useNavigate();
   const { applicationId } = useParams();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
+  const [language, setLanguage] = useState("en");
 
-  // Mock application data
   const application = {
     id: applicationId || "APP001",
-    status: "in-review" as const,
+    status: "in-review",
     submittedDate: "Dec 18, 2024",
     property: {
       id: "1",
@@ -92,7 +91,7 @@ export default function ApplicationTracker() {
     ],
   };
 
-  const getStepIcon = (status: string) => {
+  const getStepIcon = (status) => {
     switch (status) {
       case "completed":
         return <CheckCircle2 className="h-6 w-6 text-success" />;
@@ -116,7 +115,6 @@ export default function ApplicationTracker() {
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4 max-w-4xl">
-          {/* Header */}
           <div className="mb-8">
             <Button variant="ghost" size="sm" onClick={() => navigate("/tenant/dashboard")} className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -136,9 +134,7 @@ export default function ApplicationTracker() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Progress Tracker */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Application Progress</CardTitle>
@@ -148,7 +144,6 @@ export default function ApplicationTracker() {
                   <div className="relative">
                     {applicationSteps.map((step, index) => (
                       <div key={step.id} className="flex gap-4 pb-8 last:pb-0">
-                        {/* Connector Line */}
                         {index !== applicationSteps.length - 1 && (
                           <div
                             className={cn(
@@ -159,12 +154,10 @@ export default function ApplicationTracker() {
                           />
                         )}
                         
-                        {/* Icon */}
                         <div className="relative z-10 flex-shrink-0">
                           {getStepIcon(step.status)}
                         </div>
                         
-                        {/* Content */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <h4 className={cn(
@@ -189,7 +182,6 @@ export default function ApplicationTracker() {
                 </CardContent>
               </Card>
 
-              {/* Activity Timeline */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Activity Timeline</CardTitle>
@@ -232,7 +224,6 @@ export default function ApplicationTracker() {
                 </CardContent>
               </Card>
 
-              {/* Verification Status */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Verification Status</CardTitle>
@@ -262,9 +253,7 @@ export default function ApplicationTracker() {
               </Card>
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Property Card */}
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm text-muted-foreground">Applied Property</CardTitle>
@@ -301,7 +290,6 @@ export default function ApplicationTracker() {
                 </CardContent>
               </Card>
 
-              {/* Landlord Info */}
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm text-muted-foreground">Property Owner</CardTitle>
@@ -328,7 +316,6 @@ export default function ApplicationTracker() {
                 </CardContent>
               </Card>
 
-              {/* Quick Actions */}
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm text-muted-foreground">Quick Actions</CardTitle>
@@ -349,7 +336,6 @@ export default function ApplicationTracker() {
                 </CardContent>
               </Card>
 
-              {/* Help Notice */}
               <Card variant="info">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">

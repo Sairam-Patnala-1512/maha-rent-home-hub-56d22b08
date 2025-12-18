@@ -23,14 +23,13 @@ import {
 
 export default function TenantDashboard() {
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
+  const [language, setLanguage] = useState("en");
 
-  // Mock data
   const user = {
     name: "Rahul Sharma",
     verificationStatus: 85,
-    kycStatus: "verified" as const,
-    policeVerification: "pending" as const,
+    kycStatus: "verified",
+    policeVerification: "pending",
   };
 
   const applications = [
@@ -38,7 +37,7 @@ export default function TenantDashboard() {
       id: "APP001",
       property: "2 BHK in Andheri West",
       landlord: "Mr. Patel",
-      status: "in-review" as const,
+      status: "in-review",
       appliedDate: "Dec 10, 2024",
       rent: 25000,
     },
@@ -46,7 +45,7 @@ export default function TenantDashboard() {
       id: "APP002",
       property: "1 BHK in Bandra East",
       landlord: "Mrs. Desai",
-      status: "approved" as const,
+      status: "approved",
       appliedDate: "Dec 5, 2024",
       rent: 18000,
     },
@@ -69,7 +68,6 @@ export default function TenantDashboard() {
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4">
-          {/* Welcome Section */}
           <div className="mb-8">
             <h1 className="text-2xl md:text-3xl font-bold text-foreground">
               Welcome back, {user.name.split(" ")[0]}!
@@ -79,7 +77,6 @@ export default function TenantDashboard() {
             </p>
           </div>
 
-          {/* Stats Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatsCard
               title="Applications"
@@ -110,9 +107,7 @@ export default function TenantDashboard() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Profile Verification Card */}
               <Card variant="info">
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
@@ -162,7 +157,6 @@ export default function TenantDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Applications List */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -217,9 +211,7 @@ export default function TenantDashboard() {
               </Card>
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Quick Actions */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
@@ -260,7 +252,6 @@ export default function TenantDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Notifications */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -287,7 +278,6 @@ export default function TenantDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Help Card */}
               <Card variant="accent">
                 <CardContent className="pt-6">
                   <MessageSquare className="h-8 w-8 text-accent mb-3" />

@@ -24,10 +24,9 @@ import { useToast } from "@/hooks/use-toast";
 export default function AgreementConfirmation() {
   const navigate = useNavigate();
   const { agreementId } = useParams();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
+  const [language, setLanguage] = useState("en");
   const { toast } = useToast();
 
-  // Mock agreement data
   const agreement = {
     id: agreementId || "AGR001",
     registrationNo: "MH/MUM/2024/RNT/00012345",
@@ -70,7 +69,6 @@ export default function AgreementConfirmation() {
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4 max-w-3xl">
-          {/* Success Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-success/10 mb-6">
               <CheckCircle2 className="h-10 w-10 text-success" />
@@ -87,7 +85,6 @@ export default function AgreementConfirmation() {
             </p>
           </div>
 
-          {/* Registration Details */}
           <Card className="mb-6">
             <CardContent className="p-6">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-lg bg-success/5 border border-success/20">
@@ -114,13 +111,11 @@ export default function AgreementConfirmation() {
             </CardContent>
           </Card>
 
-          {/* Agreement Summary */}
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="text-lg">Agreement Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Property */}
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <Home className="h-5 w-5 text-primary" />
@@ -132,7 +127,6 @@ export default function AgreementConfirmation() {
                 </div>
               </div>
 
-              {/* Parties */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
@@ -162,7 +156,6 @@ export default function AgreementConfirmation() {
                 </div>
               </div>
 
-              {/* Duration & Financials */}
               <div className="grid sm:grid-cols-3 gap-4 p-4 rounded-lg bg-muted/50">
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
@@ -192,7 +185,6 @@ export default function AgreementConfirmation() {
             </CardContent>
           </Card>
 
-          {/* Action Buttons */}
           <Card className="mb-6">
             <CardContent className="p-6">
               <h3 className="font-semibold mb-4">Download Your Agreement</h3>
@@ -220,7 +212,6 @@ export default function AgreementConfirmation() {
             </CardContent>
           </Card>
 
-          {/* What's Next */}
           <Card variant="info">
             <CardHeader>
               <CardTitle className="text-lg">What's Next?</CardTitle>
@@ -265,7 +256,6 @@ export default function AgreementConfirmation() {
             </CardContent>
           </Card>
 
-          {/* Navigation */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
             <Button variant="default" onClick={() => navigate("/tenant/dashboard")}>
               Go to Dashboard
