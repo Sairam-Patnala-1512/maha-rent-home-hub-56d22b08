@@ -50,7 +50,7 @@ export default function Register() {
     },
   };
 
-  const config = roleConfig[role as keyof typeof roleConfig];
+  const config = roleConfig[role];
 
   const handleNext = () => {
     if (step === 1 && !formData.fullName) {
@@ -144,7 +144,7 @@ export default function Register() {
             <CardContent className="space-y-6">
               {/* Role Selection */}
               <div className="flex gap-2 p-1 bg-muted rounded-lg">
-                {(["tenant", "landlord"] as const).map((r) => (
+                {["tenant", "landlord"].map((r) => (
                   <button
                     key={r}
                     onClick={() => setRole(r)}
@@ -324,7 +324,7 @@ export default function Register() {
                       id="consent"
                       checked={formData.consent}
                       onCheckedChange={(checked) =>
-                        setFormData({ ...formData, consent: checked as boolean })
+                        setFormData({ ...formData, consent: checked })
                       }
                     />
                     <label htmlFor="consent" className="text-sm text-muted-foreground leading-tight">
