@@ -1,146 +1,30 @@
-import { useEffect, useState } from "react";
+import { toast as sonnerToast } from "@/components/ui/sonner";
 
-const TOAST_LIMIT = 1;
-const TOAST_REMOVE_DELAY = 1000000;
+// Compatibility wrapper for the former shadcn/ui use-toast API.
+// This project is JavaScript-only and we avoid React hook state here to prevent
+// invalid-hook-call issues caused by duplicated React instances in the bundler.
 
-const actionTypes = {
-  ADD_TOAST: 'ADD_TOAST',
-  UPDATE_TOAST: 'UPDATE_TOAST',
-  DISMISS_TOAST: 'DISMISS_TOAST',
-  REMOVE_TOAST: 'REMOVE_TOAST',
-};
+function toast({ title, description, variant, ..._rest } = {}) {
+  const message = title ?? "";
+  const options = description ? { description } : undefined;
 
-let count = 0;
-
-function genId() {
-  count = (count + 1) % Number.MAX_SAFE_INTEGER;
-  return count.toString();
-}
-
-const toastTimeouts = new Map();
-
-const addToRemoveQueue = (toastId) => {
-  if (toastTimeouts.has(toastId)) {
-    return;
+  if (variant === "destructive") {
+    return { id: sonnerToast.error(message, options) };
   }
 
-  const timeout = setTimeout(() => {
-    toastTimeouts.delete(toastId);
-    dispatch({
-      type: 'REMOVE_TOAST',
-      toastId: toastId,
-    });
-  }, TOAST_REMOVE_DELAY);
-
-  toastTimeouts.set(toastId, timeout);
-};
-
-export const reducer = (state, action) => {
-  switch (action.type) {
-    case 'ADD_TOAST':
-      return {
-        ...state,
-        toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
-      };
-
-    case 'UPDATE_TOAST':
-      return {
-        ...state,
-        toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
-      };
-
-    case 'DISMISS_TOAST': {
-      const { toastId } = action;
-
-      if (toastId) {
-        addToRemoveQueue(toastId);
-      } else {
-        state.toasts.forEach((toast) => {
-          addToRemoveQueue(toast.id);
-        });
-      }
-
-      return {
-        ...state,
-        toasts: state.toasts.map((t) =>
-          t.id === toastId || toastId === undefined
-            ? {
-                ...t,
-                open: false,
-              }
-            : t
-        ),
-      };
-    }
-    case 'REMOVE_TOAST':
-      if (action.toastId === undefined) {
-        return {
-          ...state,
-          toasts: [],
-        };
-      }
-      return {
-        ...state,
-        toasts: state.toasts.filter((t) => t.id !== action.toastId),
-      };
+  if (variant === "success") {
+    return { id: sonnerToast.success(message, options) };
   }
-};
 
-const listeners = [];
-
-let memoryState = { toasts: [] };
-
-function dispatch(action) {
-  memoryState = reducer(memoryState, action);
-  listeners.forEach((listener) => {
-    listener(memoryState);
-  });
-}
-
-function toast({ ...props }) {
-  const id = genId();
-
-  const update = (props) =>
-    dispatch({
-      type: 'UPDATE_TOAST',
-      toast: { ...props, id },
-    });
-  const dismiss = () => dispatch({ type: 'DISMISS_TOAST', toastId: id });
-
-  dispatch({
-    type: 'ADD_TOAST',
-    toast: {
-      ...props,
-      id,
-      open: true,
-      onOpenChange: (open) => {
-        if (!open) dismiss();
-      },
-    },
-  });
-
-  return {
-    id: id,
-    dismiss,
-    update,
-  };
+  return { id: sonnerToast(message, options) };
 }
 
 function useToast() {
-  const [state, setState] = useState(memoryState);
-
-  useEffect(() => {
-    listeners.push(setState);
-    return () => {
-      const index = listeners.indexOf(setState);
-      if (index > -1) listeners.splice(index, 1);
-    };
-  }, []);
-
+  // Keep the same shape as shadcn's hook, but without internal React state.
   return {
-    ...state,
+    toasts: [],
     toast,
-    dismiss: (toastId) => dispatch({ type: "DISMISS_TOAST", toastId }),
+    dismiss: (toastId) => sonnerToast.dismiss(toastId),
   };
 }
 
