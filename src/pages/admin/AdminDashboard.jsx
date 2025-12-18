@@ -26,7 +26,7 @@ import {
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
+  const [language, setLanguage] = useState("en");
 
   const stats = {
     totalProperties: 10542,
@@ -72,7 +72,6 @@ export default function AdminDashboard() {
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">
@@ -94,7 +93,6 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Primary Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatsCard
               title="Total Properties"
@@ -126,9 +124,7 @@ export default function AdminDashboard() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Quick Metrics */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Platform Metrics</CardTitle>
@@ -209,7 +205,6 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Pending Approvals */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -260,7 +255,6 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              {/* GIS Map Preview */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -276,14 +270,12 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="h-64 bg-muted/50 rounded-lg flex items-center justify-center relative overflow-hidden">
-                    {/* Placeholder for map */}
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-info/5" />
                     <div className="text-center z-10">
                       <Map className="h-16 w-16 text-muted-foreground/50 mx-auto mb-3" />
                       <p className="text-muted-foreground">Interactive GIS Map</p>
                       <p className="text-sm text-muted-foreground">Click to view full map</p>
                     </div>
-                    {/* Mock map markers */}
                     <div className="absolute top-1/4 left-1/3 w-3 h-3 bg-primary rounded-full animate-pulse" />
                     <div className="absolute top-1/3 left-1/2 w-4 h-4 bg-accent rounded-full animate-pulse" />
                     <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-success rounded-full animate-pulse" />
@@ -293,9 +285,7 @@ export default function AdminDashboard() {
               </Card>
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Quick Stats */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Quick Stats</CardTitle>
@@ -331,7 +321,6 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Recent Activity */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -361,7 +350,6 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              {/* System Health */}
               <Card variant="success">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-4">
@@ -381,8 +369,8 @@ export default function AdminDashboard() {
                       <span className="text-success font-medium">Healthy</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Last Sync</span>
-                      <span className="text-muted-foreground">2 min ago</span>
+                      <span className="text-muted-foreground">Last Backup</span>
+                      <span className="font-medium">2 hours ago</span>
                     </div>
                   </div>
                 </CardContent>

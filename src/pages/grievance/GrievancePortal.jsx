@@ -25,20 +25,19 @@ import { cn } from "@/lib/utils";
 
 export default function GrievancePortal() {
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
+  const [language, setLanguage] = useState("en");
   const [searchQuery, setSearchQuery] = useState("");
   const [chatMessages, setChatMessages] = useState([
     { id: 1, type: "bot", message: "Hello! I'm your MHADA support assistant. How can I help you today?" },
   ]);
   const [chatInput, setChatInput] = useState("");
 
-  // Mock grievances data
   const grievances = [
     {
       id: "GRV001",
       subject: "Delay in Application Processing",
       category: "Application",
-      status: "in-review" as const,
+      status: "in-review",
       createdAt: "Dec 15, 2024",
       lastUpdate: "Dec 17, 2024",
       priority: "medium",
@@ -47,7 +46,7 @@ export default function GrievancePortal() {
       id: "GRV002",
       subject: "Incorrect Property Information",
       category: "Property",
-      status: "resolved" as const,
+      status: "resolved",
       createdAt: "Dec 10, 2024",
       lastUpdate: "Dec 14, 2024",
       priority: "low",
@@ -56,7 +55,7 @@ export default function GrievancePortal() {
       id: "GRV003",
       subject: "Unable to Upload Documents",
       category: "Technical",
-      status: "pending" as const,
+      status: "pending",
       createdAt: "Dec 18, 2024",
       lastUpdate: "Dec 18, 2024",
       priority: "high",
@@ -82,7 +81,7 @@ export default function GrievancePortal() {
     },
   ];
 
-  const handleChatSubmit = (e: React.FormEvent) => {
+  const handleChatSubmit = (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
@@ -97,7 +96,7 @@ export default function GrievancePortal() {
     setChatInput("");
   };
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status) => {
     switch (status) {
       case "resolved":
         return <CheckCircle2 className="h-4 w-4 text-success" />;
@@ -108,7 +107,7 @@ export default function GrievancePortal() {
     }
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority) => {
     switch (priority) {
       case "high":
         return "destructive";
@@ -130,7 +129,6 @@ export default function GrievancePortal() {
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">
@@ -140,14 +138,13 @@ export default function GrievancePortal() {
                 Get help and raise concerns about your rental journey
               </p>
             </div>
-            <Button onClick={() => navigate("/grievance/new")}>
+            <Button onClick={() => navigate("/grievance/raise")}>
               <Plus className="h-4 w-4 mr-2" />
               New Grievance
             </Button>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
               <Tabs defaultValue="grievances">
                 <TabsList className="grid w-full grid-cols-3">
@@ -156,9 +153,7 @@ export default function GrievancePortal() {
                   <TabsTrigger value="faq">FAQs</TabsTrigger>
                 </TabsList>
 
-                {/* Grievances List */}
                 <TabsContent value="grievances" className="mt-6 space-y-4">
-                  {/* Search */}
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
@@ -169,13 +164,12 @@ export default function GrievancePortal() {
                     />
                   </div>
 
-                  {/* Grievance Cards */}
                   {grievances.map((grievance) => (
                     <Card
                       key={grievance.id}
                       variant="interactive"
                       className="cursor-pointer"
-                      onClick={() => navigate(`/grievance/${grievance.id}`)}
+                      onClick={() => navigate(`/grievance/${grievance.id}/status`)}
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between gap-4">
@@ -187,7 +181,7 @@ export default function GrievancePortal() {
                                 <Badge variant="outline" className="text-xs">
                                   {grievance.category}
                                 </Badge>
-                                <Badge variant={getPriorityColor(grievance.priority) as any} className="text-xs">
+                                <Badge variant={getPriorityColor(grievance.priority)} className="text-xs">
                                   {grievance.priority}
                                 </Badge>
                               </div>
@@ -213,7 +207,7 @@ export default function GrievancePortal() {
                         <p className="text-sm text-muted-foreground mb-4">
                           You haven't raised any grievances yet.
                         </p>
-                        <Button onClick={() => navigate("/grievance/new")}>
+                        <Button onClick={() => navigate("/grievance/raise")}>
                           Raise New Grievance
                         </Button>
                       </CardContent>
@@ -221,7 +215,6 @@ export default function GrievancePortal() {
                   )}
                 </TabsContent>
 
-                {/* Chatbot */}
                 <TabsContent value="chatbot" className="mt-6">
                   <Card>
                     <CardHeader className="border-b">
@@ -236,7 +229,6 @@ export default function GrievancePortal() {
                       </div>
                     </CardHeader>
                     <CardContent className="p-0">
-                      {/* Chat Messages */}
                       <div className="h-[400px] overflow-y-auto p-4 space-y-4">
                         {chatMessages.map((msg) => (
                           <div
@@ -272,7 +264,6 @@ export default function GrievancePortal() {
                         ))}
                       </div>
 
-                      {/* Chat Input */}
                       <form onSubmit={handleChatSubmit} className="border-t p-4">
                         <div className="flex gap-2">
                           <Input
@@ -290,7 +281,6 @@ export default function GrievancePortal() {
                   </Card>
                 </TabsContent>
 
-                {/* FAQs */}
                 <TabsContent value="faq" className="mt-6 space-y-4">
                   {faqs.map((faq, index) => (
                     <Card key={index}>
@@ -309,9 +299,7 @@ export default function GrievancePortal() {
               </Tabs>
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Stats */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Grievance Summary</CardTitle>
@@ -341,7 +329,6 @@ export default function GrievancePortal() {
                 </CardContent>
               </Card>
 
-              {/* Quick Actions */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
@@ -350,7 +337,7 @@ export default function GrievancePortal() {
                   <Button
                     variant="outline"
                     className="w-full justify-start"
-                    onClick={() => navigate("/grievance/new")}
+                    onClick={() => navigate("/grievance/raise")}
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Raise New Grievance
@@ -370,7 +357,6 @@ export default function GrievancePortal() {
                 </CardContent>
               </Card>
 
-              {/* Contact Info */}
               <Card variant="accent">
                 <CardContent className="p-4">
                   <h4 className="font-medium mb-3">Need Immediate Help?</h4>

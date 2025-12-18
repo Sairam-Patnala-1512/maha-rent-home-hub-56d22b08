@@ -22,13 +22,12 @@ import {
 
 export default function PropertySearch() {
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [language, setLanguage] = useState("en");
+  const [viewMode, setViewMode] = useState("grid");
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState([]);
 
-  // Mock properties data
   const properties = [
     {
       id: "1",
@@ -132,7 +131,7 @@ export default function PropertySearch() {
   const budgetRanges = ["Any Budget", "Under ₹10K", "₹10K - ₹25K", "₹25K - ₹50K", "₹50K+"];
   const eligibilityCategories = ["EWS", "Student", "Migrant", "Senior Citizen", "General"];
 
-  const removeFilter = (filter: string) => {
+  const removeFilter = (filter) => {
     setSelectedFilters(selectedFilters.filter((f) => f !== filter));
   };
 
@@ -146,14 +145,12 @@ export default function PropertySearch() {
       />
 
       <main className="flex-1">
-        {/* Search Header */}
         <div className="bg-gradient-hero py-8">
           <div className="container mx-auto px-4">
             <h1 className="text-2xl md:text-3xl font-bold text-primary-foreground mb-6">
               Find Your Perfect Rental Home
             </h1>
             
-            {/* Search Bar */}
             <div className="flex flex-col md:flex-row gap-3">
               <div className="flex-1 relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -213,10 +210,8 @@ export default function PropertySearch() {
           </div>
         </div>
 
-        {/* Results Section */}
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Filters Sidebar */}
             <aside className={`lg:w-64 flex-shrink-0 ${showFilters ? "block" : "hidden lg:block"}`}>
               <Card className="sticky top-4">
                 <CardContent className="p-4">
@@ -230,7 +225,6 @@ export default function PropertySearch() {
                     </Button>
                   </div>
 
-                  {/* Eligibility Filter */}
                   <div className="mb-6">
                     <h4 className="text-sm font-medium mb-3">Eligibility Category</h4>
                     <div className="space-y-2">
@@ -255,7 +249,6 @@ export default function PropertySearch() {
                     </div>
                   </div>
 
-                  {/* BHK Filter */}
                   <div className="mb-6">
                     <h4 className="text-sm font-medium mb-3">BHK Type</h4>
                     <div className="flex flex-wrap gap-2">
@@ -279,7 +272,6 @@ export default function PropertySearch() {
                     </div>
                   </div>
 
-                  {/* Furnishing Filter */}
                   <div className="mb-6">
                     <h4 className="text-sm font-medium mb-3">Furnishing</h4>
                     <div className="space-y-2">
@@ -294,7 +286,6 @@ export default function PropertySearch() {
                     </div>
                   </div>
 
-                  {/* Amenities Filter */}
                   <div>
                     <h4 className="text-sm font-medium mb-3">Amenities</h4>
                     <div className="space-y-2">
@@ -312,9 +303,7 @@ export default function PropertySearch() {
               </Card>
             </aside>
 
-            {/* Results */}
             <div className="flex-1">
-              {/* Results Header */}
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-lg font-semibold">
@@ -376,7 +365,6 @@ export default function PropertySearch() {
                 </div>
               </div>
 
-              {/* Property Grid */}
               <div className={`grid gap-6 ${
                 viewMode === "grid" 
                   ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3" 
@@ -394,7 +382,6 @@ export default function PropertySearch() {
                 ))}
               </div>
 
-              {/* Pagination */}
               <div className="flex justify-center mt-8">
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" disabled>

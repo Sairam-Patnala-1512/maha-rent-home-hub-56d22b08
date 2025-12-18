@@ -27,11 +27,10 @@ import {
 export default function AgreementPreview() {
   const navigate = useNavigate();
   const { agreementId } = useParams();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
+  const [language, setLanguage] = useState("en");
   const [hasRead, setHasRead] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
-  // Mock agreement data
   const agreement = {
     id: agreementId || "AGR001",
     status: "pending-signature",
@@ -81,7 +80,6 @@ export default function AgreementPreview() {
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4 max-w-5xl">
-          {/* Header */}
           <div className="mb-8">
             <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -104,9 +102,7 @@ export default function AgreementPreview() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Agreement Document */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -135,7 +131,6 @@ export default function AgreementPreview() {
                     <TabsContent value="preview" className="mt-4">
                       <ScrollArea className="h-[500px] rounded-lg border bg-card p-6">
                         <div className="space-y-6 text-sm">
-                          {/* Header */}
                           <div className="text-center space-y-2">
                             <div className="flex justify-center mb-4">
                               <Stamp className="h-16 w-16 text-primary/30" />
@@ -151,7 +146,6 @@ export default function AgreementPreview() {
                             </p>
                           </div>
 
-                          {/* Introduction */}
                           <div className="space-y-4 text-justify">
                             <p>
                               This Rent Agreement is made and executed on <strong>{agreement.generatedDate}</strong> 
@@ -177,7 +171,6 @@ export default function AgreementPreview() {
                             </div>
                           </div>
 
-                          {/* Property Details */}
                           <div>
                             <h3 className="font-semibold mb-2">1. PROPERTY DETAILS</h3>
                             <p>
@@ -189,7 +182,6 @@ export default function AgreementPreview() {
                             </div>
                           </div>
 
-                          {/* Term */}
                           <div>
                             <h3 className="font-semibold mb-2">2. TERM OF AGREEMENT</h3>
                             <p>
@@ -198,49 +190,16 @@ export default function AgreementPreview() {
                             </p>
                           </div>
 
-                          {/* Rent & Deposit */}
                           <div>
                             <h3 className="font-semibold mb-2">3. RENT AND SECURITY DEPOSIT</h3>
                             <ul className="list-disc pl-5 space-y-1">
-                              <li>Monthly Rent: <strong>₹{agreement.terms.rent.toLocaleString()}</strong> (Rupees Twenty-Five Thousand Only)</li>
-                              <li>Security Deposit: <strong>₹{agreement.terms.deposit.toLocaleString()}</strong> (Rupees Seventy-Five Thousand Only)</li>
+                              <li>Monthly Rent: <strong>₹{agreement.terms.rent.toLocaleString()}</strong></li>
+                              <li>Security Deposit: <strong>₹{agreement.terms.deposit.toLocaleString()}</strong></li>
                               <li>Monthly Maintenance: <strong>₹{agreement.terms.maintenance.toLocaleString()}</strong></li>
                               <li>Rent Due Date: {agreement.terms.rentDueDate}th of every month</li>
                             </ul>
                           </div>
 
-                          {/* Lock-in Period */}
-                          <div>
-                            <h3 className="font-semibold mb-2">4. LOCK-IN PERIOD</h3>
-                            <p>
-                              The lock-in period for this agreement shall be <strong>{agreement.terms.lockInPeriod} months</strong>. 
-                              During this period, neither party may terminate the agreement without mutual consent.
-                            </p>
-                          </div>
-
-                          {/* Notice Period */}
-                          <div>
-                            <h3 className="font-semibold mb-2">5. NOTICE PERIOD</h3>
-                            <p>
-                              After the lock-in period, either party may terminate this agreement by providing 
-                              <strong> {agreement.terms.noticePeriod} months</strong> written notice.
-                            </p>
-                          </div>
-
-                          {/* Additional Terms */}
-                          <div>
-                            <h3 className="font-semibold mb-2">6. GENERAL TERMS AND CONDITIONS</h3>
-                            <ul className="list-disc pl-5 space-y-1">
-                              <li>The Tenant shall use the property only for residential purposes.</li>
-                              <li>The Tenant shall not sublet the property without written consent from the Landlord.</li>
-                              <li>The Tenant shall maintain the property in good condition.</li>
-                              <li>All utility bills shall be borne by the Tenant.</li>
-                              <li>Any structural modifications require prior written approval from the Landlord.</li>
-                              <li>The security deposit shall be refunded within 30 days of vacating the property, subject to deductions for damages if any.</li>
-                            </ul>
-                          </div>
-
-                          {/* Signatures */}
                           <div className="mt-8 pt-6 border-t">
                             <p className="text-center mb-8">
                               IN WITNESS WHEREOF, both parties have signed this agreement on the date first mentioned above.
@@ -329,121 +288,103 @@ export default function AgreementPreview() {
                             </CardContent>
                           </Card>
                         </div>
-
-                        <div className="grid sm:grid-cols-2 gap-4">
-                          <Card>
-                            <CardContent className="p-4">
-                              <div className="flex items-center gap-3 mb-3">
-                                <User className="h-5 w-5 text-accent" />
-                                <h4 className="font-medium">Tenant</h4>
-                              </div>
-                              <div className="text-sm space-y-1 text-muted-foreground">
-                                <p className="font-medium text-foreground">{agreement.tenant.name}</p>
-                                <p>Aadhaar: {agreement.tenant.aadhaar}</p>
-                                <p>PAN: {agreement.tenant.pan}</p>
-                              </div>
-                            </CardContent>
-                          </Card>
-
-                          <Card>
-                            <CardContent className="p-4">
-                              <div className="flex items-center gap-3 mb-3">
-                                <Building className="h-5 w-5 text-accent" />
-                                <h4 className="font-medium">Landlord</h4>
-                              </div>
-                              <div className="text-sm space-y-1 text-muted-foreground">
-                                <p className="font-medium text-foreground">{agreement.landlord.name}</p>
-                                <p>Aadhaar: {agreement.landlord.aadhaar}</p>
-                                <p>PAN: {agreement.landlord.pan}</p>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </div>
                       </div>
                     </TabsContent>
                   </Tabs>
                 </CardContent>
               </Card>
 
-              {/* Consent Section */}
               <Card>
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-start space-x-3">
                     <Checkbox
-                      id="hasRead"
+                      id="read"
                       checked={hasRead}
-                      onCheckedChange={(checked) => setHasRead(checked as boolean)}
+                      onCheckedChange={(checked) => setHasRead(checked)}
                     />
-                    <label htmlFor="hasRead" className="text-sm leading-tight cursor-pointer">
-                      I have read and understood all the terms and conditions mentioned in this rental agreement.
+                    <label htmlFor="read" className="text-sm leading-tight cursor-pointer">
+                      I have read and understood the entire rental agreement document.
                     </label>
                   </div>
+
                   <div className="flex items-start space-x-3">
                     <Checkbox
-                      id="acceptTerms"
+                      id="terms"
                       checked={acceptedTerms}
-                      onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                      onCheckedChange={(checked) => setAcceptedTerms(checked)}
+                      disabled={!hasRead}
                     />
-                    <label htmlFor="acceptTerms" className="text-sm leading-tight cursor-pointer">
-                      I agree to all the terms and conditions and confirm that all information provided is accurate.
+                    <label htmlFor="terms" className="text-sm leading-tight cursor-pointer">
+                      I agree to all terms and conditions mentioned in the agreement and consent to digital signing via Aadhaar eSign.
                     </label>
                   </div>
+
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    disabled={!hasRead || !acceptedTerms}
+                    onClick={handleSign}
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    Proceed to Aadhaar eSign
+                  </Button>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Action Card */}
-              <Card className="sticky top-4">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold mb-4">Sign Agreement</h3>
-                  
-                  <div className="space-y-4 mb-6">
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-success/5 border border-success/20">
-                      <CheckCircle2 className="h-5 w-5 text-success" />
-                      <div>
-                        <p className="text-sm font-medium">Landlord Signed</p>
-                        <p className="text-xs text-muted-foreground">Dec 18, 2024</p>
-                      </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Signing Process</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      1
                     </div>
-                    
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-warning/5 border border-warning/20">
-                      <AlertCircle className="h-5 w-5 text-warning" />
-                      <div>
-                        <p className="text-sm font-medium">Your Signature Pending</p>
-                        <p className="text-xs text-muted-foreground">Sign to complete</p>
-                      </div>
+                    <div>
+                      <p className="font-medium text-sm">Review Agreement</p>
+                      <p className="text-xs text-muted-foreground">Read all terms carefully</p>
                     </div>
                   </div>
-
-                  <Button
-                    variant="default"
-                    size="lg"
-                    className="w-full"
-                    disabled={!hasRead || !acceptedTerms}
-                    onClick={handleSign}
-                  >
-                    <Pen className="h-4 w-4 mr-2" />
-                    Sign with Aadhaar eSign
-                  </Button>
-
-                  <p className="text-xs text-center text-muted-foreground mt-4">
-                    Secured by Aadhaar eSign • Legally binding
-                  </p>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      2
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Accept Terms</p>
+                      <p className="text-xs text-muted-foreground">Confirm your consent</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      3
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Aadhaar eSign</p>
+                      <p className="text-xs text-muted-foreground">OTP verification</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-bold flex-shrink-0">
+                      4
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Registration</p>
+                      <p className="text-xs text-muted-foreground">Automatic registration</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* Security Notice */}
               <Card variant="info">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <Shield className="h-5 w-5 text-info mt-0.5" />
+                    <AlertCircle className="h-5 w-5 text-info mt-0.5" />
                     <div>
-                      <h4 className="font-medium text-sm mb-1">Secure Digital Signing</h4>
+                      <h4 className="font-medium text-sm mb-1">Important</h4>
                       <p className="text-xs text-muted-foreground">
-                        This agreement will be digitally signed using Aadhaar eSign, making it legally valid 
-                        and registered with the Sub-Registrar office.
+                        The landlord will also need to sign this agreement. You will be notified once both parties have signed.
                       </p>
                     </div>
                   </div>

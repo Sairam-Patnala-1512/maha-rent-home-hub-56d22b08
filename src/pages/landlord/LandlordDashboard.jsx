@@ -24,7 +24,7 @@ import {
 
 export default function LandlordDashboard() {
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
+  const [language, setLanguage] = useState("en");
 
   const user = {
     name: "Amit Patel",
@@ -37,7 +37,7 @@ export default function LandlordDashboard() {
     {
       id: "1",
       title: "2 BHK Andheri West",
-      status: "live" as const,
+      status: "live",
       rent: 25000,
       applications: 3,
       tenantName: null,
@@ -46,7 +46,7 @@ export default function LandlordDashboard() {
     {
       id: "2",
       title: "1 BHK Bandra East",
-      status: "occupied" as const,
+      status: "occupied",
       rent: 18000,
       applications: 0,
       tenantName: "Rahul Sharma",
@@ -55,7 +55,7 @@ export default function LandlordDashboard() {
     {
       id: "3",
       title: "3 BHK Powai",
-      status: "draft" as const,
+      status: "draft",
       rent: 55000,
       applications: 0,
       tenantName: null,
@@ -64,7 +64,7 @@ export default function LandlordDashboard() {
     {
       id: "4",
       title: "1 RK Thane",
-      status: "in-review" as const,
+      status: "in-review",
       rent: 8000,
       applications: 1,
       tenantName: null,
@@ -78,7 +78,7 @@ export default function LandlordDashboard() {
       tenantName: "Priya Desai",
       property: "2 BHK Andheri West",
       appliedDate: "Dec 12, 2024",
-      status: "pending" as const,
+      status: "pending",
       verificationStatus: "verified",
     },
     {
@@ -86,7 +86,7 @@ export default function LandlordDashboard() {
       tenantName: "Vikram Singh",
       property: "2 BHK Andheri West",
       appliedDate: "Dec 10, 2024",
-      status: "in-review" as const,
+      status: "in-review",
       verificationStatus: "pending",
     },
     {
@@ -94,7 +94,7 @@ export default function LandlordDashboard() {
       tenantName: "Sneha Kulkarni",
       property: "1 RK Thane",
       appliedDate: "Dec 8, 2024",
-      status: "approved" as const,
+      status: "approved",
       verificationStatus: "verified",
     },
   ];
@@ -112,7 +112,6 @@ export default function LandlordDashboard() {
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">
@@ -128,7 +127,6 @@ export default function LandlordDashboard() {
             </Button>
           </div>
 
-          {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatsCard
               title="Total Properties"
@@ -160,7 +158,6 @@ export default function LandlordDashboard() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Properties List */}
             <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
@@ -233,7 +230,6 @@ export default function LandlordDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Recent Applications */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -288,9 +284,7 @@ export default function LandlordDashboard() {
               </Card>
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Quick Actions */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
@@ -331,7 +325,6 @@ export default function LandlordDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Earnings Summary */}
               <Card variant="accent">
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between mb-4">
@@ -353,7 +346,6 @@ export default function LandlordDashboard() {
                 </CardContent>
               </Card>
 
-              {/* Verification Reminder */}
               <Card variant="warning">
                 <CardContent className="pt-6">
                   <AlertCircle className="h-8 w-8 text-warning mb-3" />

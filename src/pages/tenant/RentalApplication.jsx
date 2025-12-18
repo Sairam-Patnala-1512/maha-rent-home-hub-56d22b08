@@ -35,10 +35,9 @@ const steps = [
 export default function RentalApplication() {
   const navigate = useNavigate();
   const { propertyId } = useParams();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
+  const [language, setLanguage] = useState("en");
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    // Personal Info
     fullName: "Rahul Sharma",
     email: "rahul.sharma@email.com",
     phone: "+91 98765 43210",
@@ -48,33 +47,24 @@ export default function RentalApplication() {
     maritalStatus: "single",
     currentAddress: "",
     permanentAddress: "",
-    
-    // Employment
     employmentType: "",
     companyName: "",
     designation: "",
     monthlyIncome: "",
     workAddress: "",
     employmentDuration: "",
-    
-    // Documents
     idProof: null,
     incomeProof: null,
     addressProof: null,
-    
-    // Additional
     numberOfOccupants: "1",
     hasPets: false,
     reasonForRenting: "",
     moveInDate: "",
     rentalDuration: "12",
-    
-    // Consent
     termsAccepted: false,
     backgroundCheckConsent: false,
   });
 
-  // Mock property data
   const property = {
     id: propertyId || "1",
     title: "Spacious 2 BHK with Balcony",
@@ -84,7 +74,7 @@ export default function RentalApplication() {
     imageUrl: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&q=80",
   };
 
-  const updateFormData = (field: string, value: any) => {
+  const updateFormData = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -101,7 +91,6 @@ export default function RentalApplication() {
   };
 
   const handleSubmit = () => {
-    // Mock submission
     navigate(`/tenant/applications/${property.id}/status`);
   };
 
@@ -118,7 +107,6 @@ export default function RentalApplication() {
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4 max-w-4xl">
-          {/* Header */}
           <div className="mb-8">
             <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -132,7 +120,6 @@ export default function RentalApplication() {
             </p>
           </div>
 
-          {/* Property Summary */}
           <Card className="mb-8">
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
@@ -157,7 +144,6 @@ export default function RentalApplication() {
             </CardContent>
           </Card>
 
-          {/* Progress Steps */}
           <div className="mb-8">
             <Progress value={progress} className="h-2 mb-4" />
             <div className="flex justify-between">
@@ -191,7 +177,6 @@ export default function RentalApplication() {
             </div>
           </div>
 
-          {/* Form Steps */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">
@@ -205,7 +190,6 @@ export default function RentalApplication() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Step 1: Personal Info */}
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div className="grid sm:grid-cols-2 gap-4">
@@ -304,7 +288,6 @@ export default function RentalApplication() {
                 </div>
               )}
 
-              {/* Step 2: Employment */}
               {currentStep === 2 && (
                 <div className="space-y-6">
                   <div className="space-y-2">
@@ -382,17 +365,6 @@ export default function RentalApplication() {
                           </Select>
                         </div>
                       </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="workAddress">Work Address</Label>
-                        <Textarea
-                          id="workAddress"
-                          value={formData.workAddress}
-                          onChange={(e) => updateFormData("workAddress", e.target.value)}
-                          placeholder="Enter your office/business address"
-                          rows={2}
-                        />
-                      </div>
                     </>
                   )}
 
@@ -422,7 +394,7 @@ export default function RentalApplication() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="rentalDuration">Rental Duration (months)</Label>
+                        <Label htmlFor="rentalDuration">Rental Duration</Label>
                         <Select value={formData.rentalDuration} onValueChange={(v) => updateFormData("rentalDuration", v)}>
                           <SelectTrigger>
                             <SelectValue />
@@ -432,7 +404,6 @@ export default function RentalApplication() {
                             <SelectItem value="11">11 months</SelectItem>
                             <SelectItem value="12">12 months</SelectItem>
                             <SelectItem value="24">24 months</SelectItem>
-                            <SelectItem value="36">36 months</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -441,123 +412,65 @@ export default function RentalApplication() {
                 </div>
               )}
 
-              {/* Step 3: Documents */}
               {currentStep === 3 && (
                 <div className="space-y-6">
+                  <div className="border-2 border-dashed rounded-lg p-8 text-center">
+                    <Upload className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Drag and drop files here, or click to browse
+                    </p>
+                    <p className="text-xs text-muted-foreground mb-4">
+                      Supported formats: JPG, PNG, PDF (Max 5MB each)
+                    </p>
+                    <Button variant="outline" type="button">
+                      Choose Files
+                    </Button>
+                  </div>
+
                   <div className="bg-info/10 border border-info/20 rounded-lg p-4 flex items-start gap-3">
-                    <Shield className="h-5 w-5 text-info mt-0.5" />
+                    <AlertCircle className="h-5 w-5 text-info mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-sm">Documents are pre-verified via DigiLocker</p>
-                      <p className="text-sm text-muted-foreground">
-                        Your Aadhaar and PAN have been verified through DigiLocker. You may upload additional documents if required.
+                      <p className="font-medium text-sm">DigiLocker Integration Available</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        You can directly fetch your documents from DigiLocker for faster verification.
                       </p>
+                      <Button variant="link" className="h-auto p-0 mt-2 text-info">
+                        Connect DigiLocker
+                      </Button>
                     </div>
-                  </div>
-
-                  <div className="grid gap-4">
-                    {[
-                      { name: "ID Proof (Aadhaar)", status: "verified", field: "idProof" },
-                      { name: "Income Proof (Salary Slip / ITR)", status: "pending", field: "incomeProof" },
-                      { name: "Address Proof", status: "verified", field: "addressProof" },
-                    ].map((doc) => (
-                      <div
-                        key={doc.name}
-                        className={cn(
-                          "flex items-center justify-between p-4 rounded-lg border",
-                          doc.status === "verified" ? "bg-success/5 border-success/20" : "bg-muted/50"
-                        )}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={cn(
-                            "w-10 h-10 rounded-lg flex items-center justify-center",
-                            doc.status === "verified" ? "bg-success/10" : "bg-muted"
-                          )}>
-                            <FileText className={cn(
-                              "h-5 w-5",
-                              doc.status === "verified" ? "text-success" : "text-muted-foreground"
-                            )} />
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm">{doc.name}</p>
-                            <p className={cn(
-                              "text-xs",
-                              doc.status === "verified" ? "text-success" : "text-muted-foreground"
-                            )}>
-                              {doc.status === "verified" ? "Verified via DigiLocker" : "Upload required"}
-                            </p>
-                          </div>
-                        </div>
-                        {doc.status === "pending" ? (
-                          <Button variant="outline" size="sm">
-                            <Upload className="h-4 w-4 mr-1" />
-                            Upload
-                          </Button>
-                        ) : (
-                          <Check className="h-5 w-5 text-success" />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="reason">Reason for Renting (Optional)</Label>
-                    <Textarea
-                      id="reason"
-                      value={formData.reasonForRenting}
-                      onChange={(e) => updateFormData("reasonForRenting", e.target.value)}
-                      placeholder="Briefly describe why you're looking for rental accommodation..."
-                      rows={3}
-                    />
                   </div>
                 </div>
               )}
 
-              {/* Step 4: Review */}
               {currentStep === 4 && (
                 <div className="space-y-6">
-                  <div className="grid gap-4">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          <User className="h-4 w-4" /> Personal Information
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="text-sm space-y-1">
-                        <p><span className="text-muted-foreground">Name:</span> {formData.fullName}</p>
-                        <p><span className="text-muted-foreground">Email:</span> {formData.email}</p>
-                        <p><span className="text-muted-foreground">Phone:</span> {formData.phone}</p>
-                      </CardContent>
-                    </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Application Summary</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-muted-foreground">Full Name</p>
+                          <p className="font-medium">{formData.fullName}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Email</p>
+                          <p className="font-medium">{formData.email}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Phone</p>
+                          <p className="font-medium">{formData.phone}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Employment Type</p>
+                          <p className="font-medium capitalize">{formData.employmentType || "Not specified"}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          <Briefcase className="h-4 w-4" /> Employment Details
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="text-sm space-y-1">
-                        <p><span className="text-muted-foreground">Type:</span> {formData.employmentType || "Not specified"}</p>
-                        <p><span className="text-muted-foreground">Company:</span> {formData.companyName || "Not specified"}</p>
-                        <p><span className="text-muted-foreground">Monthly Income:</span> ₹{formData.monthlyIncome || "Not specified"}</p>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          <Home className="h-4 w-4" /> Rental Details
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="text-sm space-y-1">
-                        <p><span className="text-muted-foreground">Property:</span> {property.title}</p>
-                        <p><span className="text-muted-foreground">Rent:</span> ₹{property.rent.toLocaleString()}/month</p>
-                        <p><span className="text-muted-foreground">Occupants:</span> {formData.numberOfOccupants}</p>
-                        <p><span className="text-muted-foreground">Duration:</span> {formData.rentalDuration} months</p>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  <div className="space-y-4 border-t pt-6">
+                  <div className="space-y-4">
                     <div className="flex items-start space-x-3">
                       <Checkbox
                         id="terms"
@@ -565,10 +478,10 @@ export default function RentalApplication() {
                         onCheckedChange={(checked) => updateFormData("termsAccepted", checked)}
                       />
                       <label htmlFor="terms" className="text-sm leading-tight cursor-pointer">
-                        I agree to the <span className="text-primary underline">Terms and Conditions</span> and{" "}
-                        <span className="text-primary underline">Privacy Policy</span> of Maharashtra State Rental Housing Portal.
+                        I agree to the Terms of Service and Privacy Policy. I understand that providing false information may result in rejection of my application.
                       </label>
                     </div>
+
                     <div className="flex items-start space-x-3">
                       <Checkbox
                         id="bgCheck"
@@ -576,48 +489,33 @@ export default function RentalApplication() {
                         onCheckedChange={(checked) => updateFormData("backgroundCheckConsent", checked)}
                       />
                       <label htmlFor="bgCheck" className="text-sm leading-tight cursor-pointer">
-                        I consent to background verification including police verification as per government norms.
+                        I consent to background verification including police verification as per MHADA guidelines.
                       </label>
-                    </div>
-                  </div>
-
-                  <div className="bg-warning/10 border border-warning/20 rounded-lg p-4 flex items-start gap-3">
-                    <AlertCircle className="h-5 w-5 text-warning mt-0.5" />
-                    <div>
-                      <p className="font-medium text-sm">Important Notice</p>
-                      <p className="text-sm text-muted-foreground">
-                        By submitting this application, you confirm that all information provided is accurate. 
-                        False information may result in application rejection and legal action.
-                      </p>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Navigation Buttons */}
-              <div className="flex justify-between pt-6 border-t">
-                <Button
-                  variant="outline"
-                  onClick={prevStep}
-                  disabled={currentStep === 1}
-                >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Previous
-                </Button>
-
+              <div className="flex gap-4 pt-6 border-t">
+                {currentStep > 1 && (
+                  <Button variant="outline" onClick={prevStep}>
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Previous
+                  </Button>
+                )}
                 {currentStep < steps.length ? (
-                  <Button onClick={nextStep}>
+                  <Button className="flex-1" onClick={nextStep}>
                     Next
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 ) : (
                   <Button
-                    variant="default"
+                    className="flex-1"
                     onClick={handleSubmit}
                     disabled={!formData.termsAccepted || !formData.backgroundCheckConsent}
                   >
-                    <Check className="h-4 w-4 mr-2" />
                     Submit Application
+                    <Check className="h-4 w-4 ml-2" />
                   </Button>
                 )}
               </div>

@@ -24,7 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function RaiseGrievance() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [language, setLanguage] = useState<"en" | "mr">("en");
+  const [language, setLanguage] = useState("en");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     category: "",
@@ -34,7 +34,7 @@ export default function RaiseGrievance() {
     relatedTo: "",
     applicationId: "",
     propertyId: "",
-    attachments: [] as string[],
+    attachments: [],
     consent: false,
   });
 
@@ -49,15 +49,14 @@ export default function RaiseGrievance() {
     { value: "other", label: "Other" },
   ];
 
-  const updateFormData = (field: string, value: any) => {
+  const updateFormData = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Mock submission
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     toast({
@@ -65,10 +64,10 @@ export default function RaiseGrievance() {
       description: "Your grievance has been registered successfully. ID: GRV004",
     });
 
-    navigate("/grievance/GRV004");
+    navigate("/grievance/GRV004/status");
   };
 
-  const removeAttachment = (index: number) => {
+  const removeAttachment = (index) => {
     setFormData((prev) => ({
       ...prev,
       attachments: prev.attachments.filter((_, i) => i !== index),
@@ -86,7 +85,6 @@ export default function RaiseGrievance() {
 
       <main className="flex-1 py-8">
         <div className="container mx-auto px-4 max-w-3xl">
-          {/* Header */}
           <div className="mb-8">
             <Button variant="ghost" size="sm" onClick={() => navigate("/grievance")} className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -102,7 +100,6 @@ export default function RaiseGrievance() {
 
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
-              {/* Category & Priority */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Grievance Details</CardTitle>
@@ -169,7 +166,7 @@ export default function RaiseGrievance() {
                       id="description"
                       value={formData.description}
                       onChange={(e) => updateFormData("description", e.target.value)}
-                      placeholder="Please describe your issue in detail. Include any relevant dates, reference numbers, or specific problems you've encountered..."
+                      placeholder="Please describe your issue in detail..."
                       rows={5}
                       required
                     />
@@ -180,7 +177,6 @@ export default function RaiseGrievance() {
                 </CardContent>
               </Card>
 
-              {/* Related References */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Related References (Optional)</CardTitle>
@@ -238,7 +234,6 @@ export default function RaiseGrievance() {
                 </CardContent>
               </Card>
 
-              {/* Attachments */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Attachments (Optional)</CardTitle>
@@ -289,7 +284,6 @@ export default function RaiseGrievance() {
                 </CardContent>
               </Card>
 
-              {/* Consent & Submit */}
               <Card>
                 <CardContent className="p-6 space-y-6">
                   <div className="flex items-start space-x-3">
