@@ -1,35 +1,46 @@
-import { User } from 'lucide-react';
+import devendraFadnavis from '@/assets/leaders/devendra-fadnavis.jpg';
+import eknathShinde from '@/assets/leaders/eknath-shinde.jpeg';
+import ajitPawar from '@/assets/leaders/ajit-pawar.jpg';
+import pankajBhoyar from '@/assets/leaders/pankaj-bhoyar.jpg';
+import aseemKumarGupta from '@/assets/leaders/aseem-kumar-gupta.jpg';
+import sanjeevJaiswal from '@/assets/leaders/sanjeev-jaiswal.avif';
 
 const leaders = [
   {
     name: 'Shri Devendra Fadnavis',
     designation: "Hon. Chief Minister, Maharashtra",
     designationMr: "मा. मुख्यमंत्री, महाराष्ट्र",
+    image: devendraFadnavis,
   },
   {
     name: 'Shri Eknath Shinde',
     designation: "Hon. Deputy CM & Housing Minister",
     designationMr: "मा. उपमुख्यमंत्री व गृहनिर्माण मंत्री",
+    image: eknathShinde,
   },
   {
     name: 'Shri Ajit Pawar',
     designation: "Hon. Deputy Chief Minister",
     designationMr: "मा. उपमुख्यमंत्री",
+    image: ajitPawar,
   },
   {
     name: 'Dr. Pankaj Bhoyar',
     designation: "Hon. Minister of State (Housing)",
     designationMr: "मा. गृहनिर्माण राज्यमंत्री",
+    image: pankajBhoyar,
   },
   {
     name: 'Shri Aseem Kumar Gupta (IAS)',
     designation: "Addl. Chief Secretary (Housing)",
     designationMr: "अपर मुख्य सचिव (गृहनिर्माण)",
+    image: aseemKumarGupta,
   },
   {
     name: 'Shri Sanjeev Jaiswal (IAS)',
     designation: "VP & CEO, MHADA",
     designationMr: "उपाध्यक्ष व CEO, म्हाडा",
+    image: sanjeevJaiswal,
   },
 ];
 
@@ -70,7 +81,11 @@ export function LeadershipProfiles({ language = 'en' }) {
               {/* Circular portrait with saffron border */}
               <div className="relative mb-2">
                 <div className="w-16 h-16 rounded-full border-[3px] border-primary bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center overflow-hidden shadow-md group-hover:shadow-lg transition-shadow">
-                  <User className="h-8 w-8 text-muted-foreground/50" />
+                  <img 
+                    src={leader.image} 
+                    alt={leader.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 {/* Subtle glow effect */}
                 <div className="absolute inset-0 rounded-full bg-primary/10 blur-md -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />

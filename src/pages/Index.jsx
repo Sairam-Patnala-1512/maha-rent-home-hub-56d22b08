@@ -157,7 +157,7 @@ const Index = () => {
                   {t.hero.description}
                 </p>
 
-                <div className="max-w-xl lg:mx-0 mx-auto mb-6 animate-slide-up delay-300">
+                <div className="max-w-2xl lg:mx-0 mx-auto mb-6 animate-slide-up delay-300">
                   <div className="flex gap-2 bg-primary-foreground/10 backdrop-blur-sm rounded-xl p-2">
                     <div className="flex-1 relative">
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-foreground/60" />
@@ -216,7 +216,7 @@ const Index = () => {
         {/* Info Panels Section - Below Hero */}
         <section className="py-8 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
               <InfoPanels language={language} />
             </div>
           </div>

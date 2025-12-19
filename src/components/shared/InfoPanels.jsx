@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronUp, ChevronDown, ExternalLink, FileText, Link as LinkIcon, Bell } from 'lucide-react';
+import { ExternalLink, FileText, Link as LinkIcon, Bell, Newspaper } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const NewsItem = ({ title, date, isNew }) => (
@@ -28,41 +28,15 @@ const QuickLinkItem = ({ title, icon: Icon = LinkIcon, isNew }) => (
   </a>
 );
 
-const CollapsiblePanel = ({ title, icon: Icon, children, defaultOpen = true }) => {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  return (
-    <div className="bg-card rounded-lg shadow-md border border-border overflow-hidden">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="mhada-panel-header w-full"
-      >
-        <div className="flex items-center gap-2">
-          <Icon className="h-4 w-4" />
-          <span>{title}</span>
-        </div>
-        {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-      </button>
-      <div
-        className={cn(
-          'transition-all duration-300 overflow-hidden',
-          isOpen ? 'max-h-96' : 'max-h-0'
-        )}
-      >
-        <div className="p-3 space-y-1 max-h-64 overflow-y-auto scrollbar-thin">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export function InfoPanels({ language = 'en' }) {
+  const [activeTab, setActiveTab] = useState('news');
+
   const content = {
     en: {
-      latestNews: 'Latest News / Flash News',
+      sectionTitle: 'Information & Updates',
+      latestNews: 'Latest News',
       quickLinks: 'Quick Links',
-      tenderNotices: 'Tender Notices',
+      tenderNotices: 'Tenders',
       viewAll: 'View all',
       news: [
         { title: 'Facility for reduction in premium as per G.R. dtd.14.01.2021 availed by Society', date: 'Dec 15, 2024', isNew: true },
@@ -84,9 +58,10 @@ export function InfoPanels({ language = 'en' }) {
       ],
     },
     mr: {
-      latestNews: 'ताज्या बातम्या / फ्लॅश न्यूज',
+      sectionTitle: 'माहिती आणि अद्यतने',
+      latestNews: 'ताज्या बातम्या',
       quickLinks: 'जलद दुवे',
-      tenderNotices: 'निविदा सूचना',
+      tenderNotices: 'निविदा',
       viewAll: 'सर्व पहा',
       news: [
         { title: 'सोसायटीद्वारे जी.आर. दि.14.01.2021 नुसार प्रीमियममध्ये कपातीची सुविधा', date: 'डिसें 15, 2024', isNew: true },
@@ -111,34 +86,73 @@ export function InfoPanels({ language = 'en' }) {
 
   const t = content[language];
 
+  const tabs = [
+    { id: 'news', label: t.latestNews, icon: Bell },
+    { id: 'links', label: t.quickLinks, icon: LinkIcon },
+    { id: 'tenders', label: t.tenderNotices, icon: FileText },
+  ];
+
   return (
-    <div className="grid md:grid-cols-3 gap-4">
-      {/* Latest News */}
-      <CollapsiblePanel title={t.latestNews} icon={Bell} defaultOpen={true}>
-        {t.news.map((item, index) => (
-          <NewsItem key={index} {...item} />
-        ))}
-        <a href="#" className="block text-center text-sm text-primary hover:underline mt-2 pt-2 border-t border-border">
-          {t.viewAll} →
-        </a>
-      </CollapsiblePanel>
+    <div className="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+      {/* Section Header */}
+      <div className="bg-gradient-to-r from-primary/5 to-success/5 px-4 py-3 border-b border-border">
+        <div className="flex items-center gap-2">
+          <Newspaper className="h-5 w-5 text-primary" />
+          <h3 className="font-semibold text-foreground">{t.sectionTitle}</h3>
+        </div>
+      </div>
 
-      {/* Quick Links */}
-      <CollapsiblePanel title={t.quickLinks} icon={LinkIcon} defaultOpen={true}>
-        {t.links.map((item, index) => (
-          <QuickLinkItem key={index} {...item} />
+      {/* Tab Headers */}
+      <div className="flex border-b border-border">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={cn(
+              'flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors',
+              activeTab === tab.id
+                ? 'text-primary border-b-2 border-primary bg-primary/5'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+            )}
+          >
+            <tab.icon className="h-4 w-4" />
+            <span className="hidden sm:inline">{tab.label}</span>
+          </button>
         ))}
-      </CollapsiblePanel>
+      </div>
 
-      {/* Tender Notices */}
-      <CollapsiblePanel title={t.tenderNotices} icon={FileText} defaultOpen={true}>
-        {t.tenders.map((item, index) => (
-          <NewsItem key={index} {...item} />
-        ))}
-        <a href="#" className="block text-center text-sm text-primary hover:underline mt-2 pt-2 border-t border-border">
-          {t.viewAll} →
-        </a>
-      </CollapsiblePanel>
+      {/* Tab Content */}
+      <div className="p-4 max-h-64 overflow-y-auto scrollbar-thin">
+        {activeTab === 'news' && (
+          <div className="space-y-1">
+            {t.news.map((item, index) => (
+              <NewsItem key={index} {...item} />
+            ))}
+            <a href="#" className="block text-center text-sm text-primary hover:underline mt-3 pt-2 border-t border-border">
+              {t.viewAll} →
+            </a>
+          </div>
+        )}
+
+        {activeTab === 'links' && (
+          <div className="space-y-1">
+            {t.links.map((item, index) => (
+              <QuickLinkItem key={index} {...item} />
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'tenders' && (
+          <div className="space-y-1">
+            {t.tenders.map((item, index) => (
+              <NewsItem key={index} {...item} />
+            ))}
+            <a href="#" className="block text-center text-sm text-primary hover:underline mt-3 pt-2 border-t border-border">
+              {t.viewAll} →
+            </a>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
