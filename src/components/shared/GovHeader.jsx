@@ -10,6 +10,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Globe, Menu, User, LogOut, Settings, Bell, X, ChevronDown, Phone, Search, Mic } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import mhadaLogo from '@/assets/mhada-logo.png';
+import indianEmblem from '@/assets/indian-emblem.jpg';
+import maharashtraEmblem from '@/assets/maharashtra-emblem.png';
 
 export function GovHeader({ 
   showAuth = true, 
@@ -84,21 +87,12 @@ export function GovHeader({
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo & Portal Name */}
           <Link to="/" className="flex items-center gap-3 flex-shrink-0">
-            {/* MHADA Style Logo */}
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-success text-success-foreground shadow-md">
-              <div className="text-center leading-none">
-                <span className="text-[10px] font-bold block">म्हाडा</span>
-                <span className="text-[8px]">MHADA</span>
-              </div>
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-base font-bold leading-tight text-foreground">
-                {currentLanguage === 'en' ? 'Maharashtra Rental Housing' : 'महाराष्ट्र भाड्याचे गृहनिर्माण'}
-              </h1>
-              <p className="text-xs text-muted-foreground">
-                {currentLanguage === 'en' ? 'महाराष्ट्र गृहनिर्माण व क्षेत्रविकास प्राधिकरण' : 'MHADA PoC Portal'}
-              </p>
-            </div>
+            {/* MHADA Official Logo */}
+            <img 
+              src={mhadaLogo} 
+              alt="MHADA - Maharashtra Housing and Area Development Authority" 
+              className="h-12 object-contain"
+            />
           </Link>
 
           {/* Center - Search Bar (MHADA style) */}
@@ -120,13 +114,17 @@ export function GovHeader({
           </div>
 
           {/* Right side - Government emblems */}
-          <div className="hidden md:flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-lg">
-              <div className="text-right text-xs">
-                <p className="font-medium text-foreground">Government of Maharashtra</p>
-                <p className="text-muted-foreground text-[10px]">महाराष्ट्र शासन</p>
-              </div>
-            </div>
+          <div className="hidden md:flex items-center gap-4">
+            <img 
+              src={indianEmblem} 
+              alt="Indian National Emblem" 
+              className="h-12 object-contain"
+            />
+            <img 
+              src={maharashtraEmblem} 
+              alt="Maharashtra State Emblem" 
+              className="h-12 object-contain"
+            />
           </div>
 
           {/* Desktop Navigation */}
