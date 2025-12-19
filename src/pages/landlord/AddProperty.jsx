@@ -34,17 +34,24 @@ export default function AddProperty() {
     { id: 1, title: "Basic Details", icon: Building2 },
     { id: 2, title: "Rooms & Amenities", icon: Home },
     { id: 3, title: "Images & Documents", icon: Image },
-    { id: 4, title: "Preview & Submit", icon: CheckCircle2 },
+    { id: 4, title: "Review & Submit", icon: CheckCircle2 },
   ];
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedPropertyId, setSubmittedPropertyId] = useState(null);
 
   const [formData, setFormData] = useState({
     title: "",
+    propertyCategory: "",
     propertyType: "",
     address: "",
     city: "",
+    district: "",
+    locality: "",
     pincode: "",
     rent: "",
     deposit: "",
+    availabilityDate: "",
     bedrooms: "",
     bathrooms: "",
     area: "",
@@ -52,9 +59,19 @@ export default function AddProperty() {
     floor: "",
     totalFloors: "",
     amenities: [],
+    suitableFor: [],
     description: "",
     images: [],
+    declaration: false,
   });
+
+  const suitableForOptions = [
+    "Family",
+    "Working Professionals",
+    "Students",
+    "Migrant Workers",
+    "Senior Citizens",
+  ];
 
   const amenitiesList = [
     "Parking", "Lift", "Power Backup", "Security", "Gym",
@@ -76,12 +93,107 @@ export default function AddProperty() {
   };
 
   const handleSubmit = () => {
-    toast({
-      title: "Property Submitted",
-      description: "Your property has been submitted for review. You will be notified once approved.",
-    });
-    navigate("/landlord/properties");
+    const propertyId = `PROP${Math.floor(100000 + Math.random() * 900000)}`;
+    setSubmittedPropertyId(propertyId);
+    setIsSubmitted(true);
   };
+
+  const toggleSuitableFor = (option) => {
+    setFormData((prev) => ({
+      ...prev,
+      suitableFor: prev.suitableFor.includes(option)
+        ? prev.suitableFor.filter((o) => o !== option)
+        : [...prev.suitableFor, option],
+    }));
+  };
+
+  // Step 5: Submission Confirmation
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <GovHeader
+          userName="Amit Patel"
+          userRole="landlord"
+          onLanguageChange={setLanguage}
+          currentLanguage={language}
+        />
+        <main className="flex-1 py-8">
+          <div className="container mx-auto px-4 max-w-2xl">
+            <Card className="text-center">
+              <CardContent className="pt-12 pb-8">
+                <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle2 className="h-10 w-10 text-success" />
+                </div>
+                <h1 className="text-2xl font-bold text-foreground mb-2">
+                  Property Submitted Successfully!
+                </h1>
+                <p className="text-muted-foreground mb-6">
+                  Your property has been submitted for review by MHADA officials.
+                </p>
+
+                <div className="p-4 rounded-lg bg-muted/50 mb-6 inline-block">
+                  <p className="text-sm text-muted-foreground">Property ID</p>
+                  <p className="text-xl font-mono font-bold text-primary">{submittedPropertyId}</p>
+                </div>
+
+                <div className="p-4 rounded-lg border border-warning/30 bg-warning/5 mb-8">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <div className="w-3 h-3 rounded-full bg-warning animate-pulse" />
+                    <span className="font-medium text-warning">Status: Under Review</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Review typically takes 2-3 business days. You will receive a notification once approved.
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button onClick={() => navigate("/landlord/properties")}>
+                    <Building2 className="h-4 w-4 mr-2" />
+                    View Property List
+                  </Button>
+                  <Button
+                    variant="govOutline"
+                    onClick={() => {
+                      setIsSubmitted(false);
+                      setCurrentStep(1);
+                      setFormData({
+                        title: "",
+                        propertyCategory: "",
+                        propertyType: "",
+                        address: "",
+                        city: "",
+                        district: "",
+                        locality: "",
+                        pincode: "",
+                        rent: "",
+                        deposit: "",
+                        availabilityDate: "",
+                        bedrooms: "",
+                        bathrooms: "",
+                        area: "",
+                        furnishing: "",
+                        floor: "",
+                        totalFloors: "",
+                        amenities: [],
+                        suitableFor: [],
+                        description: "",
+                        images: [],
+                        declaration: false,
+                      });
+                    }}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Another Property
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const toggleAmenity = (amenity) => {
     setFormData((prev) => ({
@@ -171,7 +283,22 @@ export default function AddProperty() {
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Property Type</Label>
+                    <Label>Property Category</Label>
+                    <Select
+                      value={formData.propertyCategory}
+                      onValueChange={(value) => setFormData({ ...formData, propertyCategory: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="house">House</SelectItem>
+                        <SelectItem value="apartment">Apartment</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Unit Type</Label>
                     <Select
                       value={formData.propertyType}
                       onValueChange={(value) => setFormData({ ...formData, propertyType: value })}
@@ -180,14 +307,17 @@ export default function AddProperty() {
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="apartment">Apartment</SelectItem>
-                        <SelectItem value="house">Independent House</SelectItem>
-                        <SelectItem value="villa">Villa</SelectItem>
-                        <SelectItem value="studio">Studio</SelectItem>
-                        <SelectItem value="pg">PG/Hostel</SelectItem>
+                        <SelectItem value="1rk">1 RK</SelectItem>
+                        <SelectItem value="1bhk">1 BHK</SelectItem>
+                        <SelectItem value="2bhk">2 BHK</SelectItem>
+                        <SelectItem value="3bhk">3 BHK</SelectItem>
+                        <SelectItem value="4bhk">4+ BHK</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                <div className="grid sm:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>City</Label>
                     <Select
@@ -206,6 +336,33 @@ export default function AddProperty() {
                       </SelectContent>
                     </Select>
                   </div>
+                  <div className="space-y-2">
+                    <Label>District</Label>
+                    <Select
+                      value={formData.district}
+                      onValueChange={(value) => setFormData({ ...formData, district: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select district" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="mumbai-city">Mumbai City</SelectItem>
+                        <SelectItem value="mumbai-suburban">Mumbai Suburban</SelectItem>
+                        <SelectItem value="thane">Thane</SelectItem>
+                        <SelectItem value="pune">Pune</SelectItem>
+                        <SelectItem value="nagpur">Nagpur</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="locality">Locality</Label>
+                    <Input
+                      id="locality"
+                      placeholder="e.g., Andheri West"
+                      value={formData.locality}
+                      onChange={(e) => setFormData({ ...formData, locality: e.target.value })}
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -218,7 +375,7 @@ export default function AddProperty() {
                   />
                 </div>
 
-                <div className="grid sm:grid-cols-3 gap-4">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="pincode">Pincode</Label>
                     <Input
@@ -226,6 +383,16 @@ export default function AddProperty() {
                       placeholder="400058"
                       value={formData.pincode}
                       onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="area">Built-up Area (sq.ft)</Label>
+                    <Input
+                      id="area"
+                      type="number"
+                      placeholder="850"
+                      value={formData.area}
+                      onChange={(e) => setFormData({ ...formData, area: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
@@ -248,6 +415,16 @@ export default function AddProperty() {
                       onChange={(e) => setFormData({ ...formData, deposit: e.target.value })}
                     />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="availabilityDate">Availability Date</Label>
+                  <Input
+                    id="availabilityDate"
+                    type="date"
+                    value={formData.availabilityDate}
+                    onChange={(e) => setFormData({ ...formData, availabilityDate: e.target.value })}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -364,6 +541,26 @@ export default function AddProperty() {
                   </div>
                 </div>
 
+                <div className="space-y-3">
+                  <Label>Suitable For</Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                    {suitableForOptions.map((option) => (
+                      <div
+                        key={option}
+                        className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${
+                          formData.suitableFor.includes(option)
+                            ? "bg-accent/10 border-accent"
+                            : "hover:bg-muted/50"
+                        }`}
+                        onClick={() => toggleSuitableFor(option)}
+                      >
+                        <Checkbox checked={formData.suitableFor.includes(option)} />
+                        <span className="text-sm">{option}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="description">Property Description</Label>
                   <Textarea
@@ -424,79 +621,142 @@ export default function AddProperty() {
             </Card>
           )}
 
-          {/* Step 4: Preview & Submit */}
+          {/* Step 4: Review & Submit */}
           {currentStep === 4 && (
             <Card>
               <CardHeader>
-                <CardTitle>Preview & Submit</CardTitle>
+                <CardTitle>Review & Submit</CardTitle>
                 <CardDescription>Review your property details before submission</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid sm:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-medium mb-3">Basic Details</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Title</span>
-                        <span>{formData.title || "Not provided"}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Type</span>
-                        <span className="capitalize">{formData.propertyType || "Not selected"}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">City</span>
-                        <span className="capitalize">{formData.city || "Not selected"}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Rent</span>
-                        <span>₹{formData.rent || "0"}/month</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Deposit</span>
-                        <span>₹{formData.deposit || "0"}</span>
-                      </div>
-                    </div>
+                {/* Basic Details Section */}
+                <div className="p-4 rounded-lg border">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium">Basic Details</h4>
+                    <Button variant="ghost" size="sm" onClick={() => setCurrentStep(1)}>
+                      Edit
+                    </Button>
                   </div>
-                  <div>
-                    <h4 className="font-medium mb-3">Property Configuration</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Bedrooms</span>
-                        <span>{formData.bedrooms || "0"} BHK</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Bathrooms</span>
-                        <span>{formData.bathrooms || "0"}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Area</span>
-                        <span>{formData.area || "0"} sq.ft</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Furnishing</span>
-                        <span className="capitalize">{formData.furnishing || "Not selected"}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Floor</span>
-                        <span>{formData.floor || "0"} of {formData.totalFloors || "0"}</span>
-                      </div>
+                  <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Title</span>
+                      <span className="font-medium">{formData.title || "Not provided"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Category</span>
+                      <span className="capitalize font-medium">{formData.propertyCategory || "Not selected"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Unit Type</span>
+                      <span className="uppercase font-medium">{formData.propertyType || "Not selected"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">City / District</span>
+                      <span className="capitalize font-medium">{formData.city || "-"} / {formData.district || "-"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Locality</span>
+                      <span className="font-medium">{formData.locality || "-"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Built-up Area</span>
+                      <span className="font-medium">{formData.area || "0"} sq.ft</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Monthly Rent</span>
+                      <span className="font-medium text-primary">₹{formData.rent || "0"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Availability</span>
+                      <span className="font-medium">{formData.availabilityDate || "Immediate"}</span>
                     </div>
                   </div>
                 </div>
 
-                {formData.amenities.length > 0 && (
-                  <div>
-                    <h4 className="font-medium mb-3">Amenities</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {formData.amenities.map((amenity) => (
-                        <span key={amenity} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                          {amenity}
-                        </span>
-                      ))}
+                {/* Configuration Section */}
+                <div className="p-4 rounded-lg border">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium">Rooms & Amenities</h4>
+                    <Button variant="ghost" size="sm" onClick={() => setCurrentStep(2)}>
+                      Edit
+                    </Button>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4 text-sm mb-4">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Bedrooms</span>
+                      <span className="font-medium">{formData.bedrooms || "0"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Bathrooms</span>
+                      <span className="font-medium">{formData.bathrooms || "0"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Furnishing</span>
+                      <span className="capitalize font-medium">{formData.furnishing || "Not selected"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Floor</span>
+                      <span className="font-medium">{formData.floor || "-"} of {formData.totalFloors || "-"}</span>
                     </div>
                   </div>
-                )}
+                  {formData.amenities.length > 0 && (
+                    <div className="mb-4">
+                      <p className="text-sm text-muted-foreground mb-2">Amenities</p>
+                      <div className="flex flex-wrap gap-2">
+                        {formData.amenities.map((amenity) => (
+                          <span key={amenity} className="px-2 py-1 bg-primary/10 text-primary rounded text-xs">
+                            {amenity}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {formData.suitableFor.length > 0 && (
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">Suitable For</p>
+                      <div className="flex flex-wrap gap-2">
+                        {formData.suitableFor.map((option) => (
+                          <span key={option} className="px-2 py-1 bg-accent/10 text-accent rounded text-xs">
+                            {option}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Images Section */}
+                <div className="p-4 rounded-lg border">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium">Images & Documents</h4>
+                    <Button variant="ghost" size="sm" onClick={() => setCurrentStep(3)}>
+                      Edit
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {formData.images.length > 0 
+                      ? `${formData.images.length} images uploaded` 
+                      : "No images uploaded (you can add them later)"}
+                  </p>
+                </div>
+
+                {/* Declaration */}
+                <div className="p-4 rounded-lg bg-muted/50 border">
+                  <div
+                    className="flex items-start gap-3 cursor-pointer"
+                    onClick={() => setFormData({ ...formData, declaration: !formData.declaration })}
+                  >
+                    <Checkbox checked={formData.declaration} className="mt-1" />
+                    <div>
+                      <p className="text-sm font-medium">Declaration</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        I hereby declare that all information provided is true and accurate. I am the rightful owner 
+                        or authorized representative of this property and agree to comply with MHADA rental housing 
+                        guidelines and Maharashtra Rent Control Act provisions.
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
                 <div className="p-4 rounded-lg bg-info/10 border border-info/20">
                   <p className="text-sm text-info">
@@ -524,9 +784,9 @@ export default function AddProperty() {
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             ) : (
-              <Button onClick={handleSubmit}>
+              <Button onClick={handleSubmit} disabled={!formData.declaration}>
                 <CheckCircle2 className="h-4 w-4 mr-2" />
-                Submit for Review
+                Submit Property
               </Button>
             )}
           </div>
