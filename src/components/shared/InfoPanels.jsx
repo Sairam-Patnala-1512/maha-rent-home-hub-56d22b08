@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { ExternalLink, FileText, Link as LinkIcon, Bell, Newspaper } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 const NewsItem = ({ title, date, isNew }) => (
   <a 
@@ -29,14 +27,12 @@ const QuickLinkItem = ({ title, icon: Icon = LinkIcon, isNew }) => (
 );
 
 export function InfoPanels({ language = 'en' }) {
-  const [activeTab, setActiveTab] = useState('news');
-
   const content = {
     en: {
       sectionTitle: 'Information & Updates',
       latestNews: 'Latest News',
       quickLinks: 'Quick Links',
-      tenderNotices: 'Tenders',
+      tenderNotices: 'Tender Notices',
       viewAll: 'View all',
       news: [
         { title: 'Facility for reduction in premium as per G.R. dtd.14.01.2021 availed by Society', date: 'Dec 15, 2024', isNew: true },
@@ -61,7 +57,7 @@ export function InfoPanels({ language = 'en' }) {
       sectionTitle: 'माहिती आणि अद्यतने',
       latestNews: 'ताज्या बातम्या',
       quickLinks: 'जलद दुवे',
-      tenderNotices: 'निविदा',
+      tenderNotices: 'निविदा सूचना',
       viewAll: 'सर्व पहा',
       news: [
         { title: 'सोसायटीद्वारे जी.आर. दि.14.01.2021 नुसार प्रीमियममध्ये कपातीची सुविधा', date: 'डिसें 15, 2024', isNew: true },
@@ -86,72 +82,62 @@ export function InfoPanels({ language = 'en' }) {
 
   const t = content[language];
 
-  const tabs = [
-    { id: 'news', label: t.latestNews, icon: Bell },
-    { id: 'links', label: t.quickLinks, icon: LinkIcon },
-    { id: 'tenders', label: t.tenderNotices, icon: FileText },
-  ];
-
   return (
     <div className="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
       {/* Section Header */}
-      <div className="bg-gradient-to-r from-primary/5 to-success/5 px-4 py-3 border-b border-border">
+      <div className="bg-gradient-to-r from-primary/5 to-success/5 px-5 py-4 border-b border-border">
         <div className="flex items-center gap-2">
           <Newspaper className="h-5 w-5 text-primary" />
-          <h3 className="font-semibold text-foreground">{t.sectionTitle}</h3>
+          <h3 className="font-semibold text-lg text-foreground">{t.sectionTitle}</h3>
         </div>
       </div>
 
-      {/* Tab Headers */}
-      <div className="flex border-b border-border">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={cn(
-              'flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors',
-              activeTab === tab.id
-                ? 'text-primary border-b-2 border-primary bg-primary/5'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-            )}
-          >
-            <tab.icon className="h-4 w-4" />
-            <span className="hidden sm:inline">{tab.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Tab Content */}
-      <div className="p-4 max-h-64 overflow-y-auto scrollbar-thin">
-        {activeTab === 'news' && (
-          <div className="space-y-1">
+      {/* 3-Column Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+        {/* Latest News Column */}
+        <div className="p-4">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
+            <Bell className="h-4 w-4 text-primary" />
+            <h4 className="font-medium text-sm text-foreground">{t.latestNews}</h4>
+          </div>
+          <div className="space-y-1 max-h-52 overflow-y-auto scrollbar-thin">
             {t.news.map((item, index) => (
               <NewsItem key={index} {...item} />
             ))}
-            <a href="#" className="block text-center text-sm text-primary hover:underline mt-3 pt-2 border-t border-border">
-              {t.viewAll} →
-            </a>
           </div>
-        )}
+          <a href="#" className="block text-center text-sm text-primary hover:underline mt-3 pt-2 border-t border-border">
+            {t.viewAll} →
+          </a>
+        </div>
 
-        {activeTab === 'links' && (
-          <div className="space-y-1">
+        {/* Quick Links Column */}
+        <div className="p-4">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
+            <LinkIcon className="h-4 w-4 text-success" />
+            <h4 className="font-medium text-sm text-foreground">{t.quickLinks}</h4>
+          </div>
+          <div className="space-y-1 max-h-52 overflow-y-auto scrollbar-thin">
             {t.links.map((item, index) => (
               <QuickLinkItem key={index} {...item} />
             ))}
           </div>
-        )}
+        </div>
 
-        {activeTab === 'tenders' && (
-          <div className="space-y-1">
+        {/* Tender Notices Column */}
+        <div className="p-4">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-border">
+            <FileText className="h-4 w-4 text-warning" />
+            <h4 className="font-medium text-sm text-foreground">{t.tenderNotices}</h4>
+          </div>
+          <div className="space-y-1 max-h-52 overflow-y-auto scrollbar-thin">
             {t.tenders.map((item, index) => (
               <NewsItem key={index} {...item} />
             ))}
-            <a href="#" className="block text-center text-sm text-primary hover:underline mt-3 pt-2 border-t border-border">
-              {t.viewAll} →
-            </a>
           </div>
-        )}
+          <a href="#" className="block text-center text-sm text-primary hover:underline mt-3 pt-2 border-t border-border">
+            {t.viewAll} →
+          </a>
+        </div>
       </div>
     </div>
   );

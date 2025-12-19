@@ -214,17 +214,26 @@ const Index = () => {
         </section>
 
         {/* Info Panels Section - Below Hero */}
-        <section className="py-8 bg-muted/30">
+        <section className="py-10 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto">
+            <div className="max-w-6xl mx-auto">
               <InfoPanels language={language} />
             </div>
           </div>
         </section>
 
         {/* Stats Section */}
-        <section className="py-8 -mt-8 relative z-10">
+        <section className="py-12 bg-background relative z-10">
           <div className="container mx-auto px-4">
+            {/* Section Heading */}
+            <div className="text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                {language === 'en' ? 'Portal at a Glance' : 'पोर्टल एका दृष्टीक्षेपात'}
+              </h2>
+              <p className="text-muted-foreground mt-2">
+                {language === 'en' ? 'MHADA Rental Housing – Key Metrics' : 'म्हाडा भाड्याचे गृहनिर्माण – प्रमुख मेट्रिक्स'}
+              </p>
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto">
               {[
                 { value: t.stats.properties, label: t.stats.propertiesLabel, icon: Home },
