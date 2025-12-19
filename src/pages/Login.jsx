@@ -26,22 +26,25 @@ export default function Login() {
 
   const roleConfig = {
     tenant: {
-      title: 'Tenant Login',
+      title: 'Citizen Login',
       icon: Users,
       color: 'primary',
       dashboard: '/tenant/dashboard',
+      demoCredentials: { phone: '98765 43210', otp: '123456' },
     },
     landlord: {
       title: 'Landlord Login',
       icon: Building2,
       color: 'accent',
       dashboard: '/landlord/dashboard',
+      demoCredentials: { phone: '91234 56789', otp: '123456' },
     },
     admin: {
       title: 'Admin Login',
       icon: Shield,
       color: 'success',
       dashboard: '/admin/dashboard',
+      demoCredentials: { username: 'mhada.admin', password: 'Admin@123' },
     },
   };
 
@@ -264,6 +267,22 @@ export default function Login() {
               >
                 Create New Account
               </Button>
+
+              {/* Demo Credentials */}
+              <div className="mt-4 p-3 rounded-lg bg-info/10 border border-info/20">
+                <p className="text-xs font-medium text-info mb-2">Demo Credentials (For Testing)</p>
+                {role === 'admin' ? (
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    <p><span className="font-medium">Username:</span> {config.demoCredentials.username}</p>
+                    <p><span className="font-medium">Password:</span> {config.demoCredentials.password}</p>
+                  </div>
+                ) : (
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    <p><span className="font-medium">Mobile:</span> {config.demoCredentials.phone}</p>
+                    <p><span className="font-medium">OTP:</span> {config.demoCredentials.otp}</p>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 
