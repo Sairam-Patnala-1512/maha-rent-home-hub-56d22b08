@@ -4,6 +4,7 @@ import { GovHeader } from '@/components/shared/GovHeader';
 import { Footer } from '@/components/shared/Footer';
 import { InfoPanels } from '@/components/shared/InfoPanels';
 import { LeadershipProfiles } from '@/components/shared/LeadershipProfiles';
+import { EventGlimpse } from '@/components/shared/EventGlimpse';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -213,7 +214,10 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Info Panels Section - Below Hero */}
+        {/* Glimpse of the Event Section - Below Hero */}
+        <EventGlimpse language={language} />
+
+        {/* Info Panels Section - Below Event Glimpse */}
         <section className="py-10 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
