@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { GovHeader } from '@/components/shared/GovHeader';
 import { Footer } from '@/components/shared/Footer';
 import { InfoPanels } from '@/components/shared/InfoPanels';
+import { LeadershipProfiles } from '@/components/shared/LeadershipProfiles';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -184,9 +185,9 @@ const Index = () => {
                 </Button>
               </div>
 
-              {/* Right Side Info Panels */}
+              {/* Right Side Leadership Profiles */}
               <div className="w-full lg:w-80 xl:w-96 animate-slide-in-right">
-                <InfoPanels language={language} />
+                <LeadershipProfiles language={language} />
               </div>
             </div>
           </div>
