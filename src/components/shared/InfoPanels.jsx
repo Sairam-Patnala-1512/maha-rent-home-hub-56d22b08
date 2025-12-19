@@ -112,7 +112,7 @@ export function InfoPanels({ language = 'en' }) {
   const t = content[language];
 
   return (
-    <div className="space-y-4">
+    <div className="grid md:grid-cols-3 gap-4">
       {/* Latest News */}
       <CollapsiblePanel title={t.latestNews} icon={Bell} defaultOpen={true}>
         {t.news.map((item, index) => (
@@ -131,7 +131,7 @@ export function InfoPanels({ language = 'en' }) {
       </CollapsiblePanel>
 
       {/* Tender Notices */}
-      <CollapsiblePanel title={t.tenderNotices} icon={FileText} defaultOpen={false}>
+      <CollapsiblePanel title={t.tenderNotices} icon={FileText} defaultOpen={true}>
         {t.tenders.map((item, index) => (
           <NewsItem key={index} {...item} />
         ))}
