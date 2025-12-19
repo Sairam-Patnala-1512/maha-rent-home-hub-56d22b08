@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GovHeader } from '@/components/shared/GovHeader';
 import { Footer } from '@/components/shared/Footer';
+import { InfoPanels } from '@/components/shared/InfoPanels';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -129,7 +130,7 @@ const Index = () => {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden bg-gradient-hero py-20 lg:py-32">
+        <section className="relative overflow-hidden bg-gradient-hero py-16 lg:py-24">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-full h-full" style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
@@ -137,48 +138,56 @@ const Index = () => {
           </div>
 
           <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-4xl mx-auto text-center text-primary-foreground">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm mb-8 animate-fade-in">
-                <Shield className="h-4 w-4" />
-                <span className="text-sm font-medium">{language === 'en' ? 'Official Government Portal' : 'अधिकृत सरकारी पोर्टल'}</span>
-              </div>
-
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-slide-up">
-                {t.hero.title}
-              </h1>
-              <p className="text-xl md:text-2xl opacity-90 mb-4 animate-slide-up delay-100">
-                {t.hero.subtitle}
-              </p>
-              <p className="text-lg opacity-80 mb-10 max-w-2xl mx-auto animate-slide-up delay-200">
-                {t.hero.description}
-              </p>
-
-              <div className="max-w-2xl mx-auto mb-8 animate-slide-up delay-300">
-                <div className="flex gap-2 bg-primary-foreground/10 backdrop-blur-sm rounded-xl p-2">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-foreground/60" />
-                    <input
-                      type="text"
-                      placeholder={t.hero.searchPlaceholder}
-                      className="w-full h-12 pl-12 pr-4 bg-primary-foreground/10 rounded-lg text-primary-foreground placeholder:text-primary-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary-foreground/30"
-                    />
-                  </div>
-                  <Button variant="hero" size="lg" onClick={() => navigate('/tenant/properties')}>
-                    <Search className="h-5 w-5" />
-                    {language === 'en' ? 'Search' : 'शोधा'}
-                  </Button>
+            <div className="flex flex-col lg:flex-row gap-8 items-start">
+              {/* Main Hero Content */}
+              <div className="flex-1 text-center lg:text-left text-primary-foreground">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 backdrop-blur-sm mb-6 animate-fade-in">
+                  <Shield className="h-4 w-4" />
+                  <span className="text-sm font-medium">{language === 'en' ? 'Official Government Portal' : 'अधिकृत सरकारी पोर्टल'}</span>
                 </div>
+
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 animate-slide-up">
+                  {t.hero.title}
+                </h1>
+                <p className="text-lg md:text-xl opacity-90 mb-3 animate-slide-up delay-100">
+                  {t.hero.subtitle}
+                </p>
+                <p className="text-base opacity-80 mb-8 max-w-2xl lg:mx-0 mx-auto animate-slide-up delay-200">
+                  {t.hero.description}
+                </p>
+
+                <div className="max-w-xl lg:mx-0 mx-auto mb-6 animate-slide-up delay-300">
+                  <div className="flex gap-2 bg-primary-foreground/10 backdrop-blur-sm rounded-xl p-2">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-foreground/60" />
+                      <input
+                        type="text"
+                        placeholder={t.hero.searchPlaceholder}
+                        className="w-full h-12 pl-12 pr-4 bg-primary-foreground/10 rounded-lg text-primary-foreground placeholder:text-primary-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary-foreground/30"
+                      />
+                    </div>
+                    <Button variant="secondary" size="lg" onClick={() => navigate('/tenant/properties')}>
+                      <Search className="h-5 w-5" />
+                      {language === 'en' ? 'Search' : 'शोधा'}
+                    </Button>
+                  </div>
+                </div>
+
+                <Button
+                  variant="secondary"
+                  size="xl"
+                  onClick={() => navigate('/register')}
+                  className="animate-slide-up delay-400"
+                >
+                  {t.hero.cta}
+                  <ArrowRight className="h-5 w-5" />
+                </Button>
               </div>
 
-              <Button
-                variant="hero"
-                size="xl"
-                onClick={() => navigate('/register')}
-                className="animate-slide-up delay-400"
-              >
-                {t.hero.cta}
-                <ArrowRight className="h-5 w-5" />
-              </Button>
+              {/* Right Side Info Panels */}
+              <div className="w-full lg:w-80 xl:w-96 animate-slide-in-right">
+                <InfoPanels language={language} />
+              </div>
             </div>
           </div>
 
@@ -232,10 +241,10 @@ const Index = () => {
             <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               <Card
                 variant="interactive"
-                className="overflow-hidden group"
+                className="overflow-hidden group cursor-pointer"
                 onClick={() => navigate('/login?role=tenant')}
               >
-                <div className="h-2 bg-gradient-to-r from-primary to-info" />
+                <div className="h-2 bg-gradient-to-r from-primary to-primary-light" />
                 <CardHeader className="text-center pb-2">
                   <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Users className="h-8 w-8 text-primary" />
@@ -261,13 +270,13 @@ const Index = () => {
 
               <Card
                 variant="interactive"
-                className="overflow-hidden group"
+                className="overflow-hidden group cursor-pointer"
                 onClick={() => navigate('/login?role=landlord')}
               >
-                <div className="h-2 bg-gradient-to-r from-accent to-accent-light" />
+                <div className="h-2 bg-gradient-to-r from-success to-success" />
                 <CardHeader className="text-center pb-2">
-                  <div className="mx-auto w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Building2 className="h-8 w-8 text-accent" />
+                  <div className="mx-auto w-16 h-16 rounded-2xl bg-success/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Building2 className="h-8 w-8 text-success" />
                   </div>
                   <CardTitle className="text-xl">{t.roles.landlord.title}</CardTitle>
                   <CardDescription>{t.roles.landlord.description}</CardDescription>
@@ -281,7 +290,7 @@ const Index = () => {
                       </li>
                     ))}
                   </ul>
-                  <Button className="w-full mt-6" variant="hero">
+                  <Button className="w-full mt-6" variant="success">
                     {language === 'en' ? 'Continue as Landlord' : 'घरमालक म्हणून सुरू ठेवा'}
                     <ArrowRight className="h-4 w-4" />
                   </Button>
@@ -290,13 +299,13 @@ const Index = () => {
 
               <Card
                 variant="interactive"
-                className="overflow-hidden group"
+                className="overflow-hidden group cursor-pointer"
                 onClick={() => navigate('/login?role=admin')}
               >
-                <div className="h-2 bg-gradient-to-r from-success to-info" />
+                <div className="h-2 bg-gradient-to-r from-primary to-success" />
                 <CardHeader className="text-center pb-2">
-                  <div className="mx-auto w-16 h-16 rounded-2xl bg-success/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Shield className="h-8 w-8 text-success" />
+                  <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Shield className="h-8 w-8 text-primary" />
                   </div>
                   <CardTitle className="text-xl">{t.roles.admin.title}</CardTitle>
                   <CardDescription>{t.roles.admin.description}</CardDescription>
@@ -310,7 +319,7 @@ const Index = () => {
                       </li>
                     ))}
                   </ul>
-                  <Button className="w-full mt-6" variant="success">
+                  <Button className="w-full mt-6" variant="default">
                     {language === 'en' ? 'Admin Login' : 'प्रशासक लॉगिन'}
                     <ArrowRight className="h-4 w-4" />
                   </Button>
@@ -392,7 +401,7 @@ const Index = () => {
                 : 'आमच्या पोर्टलद्वारे सत्यापित भाड्याचे घर शोधलेल्या हजारो नागरिकांमध्ये सामील व्हा.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="hero" size="xl" onClick={() => navigate('/register')}>
+              <Button variant="secondary" size="xl" onClick={() => navigate('/register')}>
                 {language === 'en' ? 'Register Now' : 'आता नोंदणी करा'}
                 <ArrowRight className="h-5 w-5" />
               </Button>
