@@ -174,15 +174,26 @@ const Index = () => {
                   </div>
                 </div>
 
-                <Button
-                  variant="secondary"
-                  size="xl"
-                  onClick={() => navigate('/register')}
-                  className="animate-slide-up delay-400"
-                >
-                  {t.hero.cta}
-                  <ArrowRight className="h-5 w-5" />
-                </Button>
+                {/* Dual CTAs */}
+                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start animate-slide-up delay-400">
+                  <Button
+                    variant="secondary"
+                    size="xl"
+                    onClick={() => navigate('/tenant/properties')}
+                  >
+                    {language === 'en' ? 'Find Rental Housing' : 'भाड्याचे घर शोधा'}
+                    <Search className="h-5 w-5" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="xl"
+                    onClick={() => navigate('/register?role=landlord')}
+                    className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
+                  >
+                    {language === 'en' ? 'Register as Landlord' : 'घरमालक म्हणून नोंदणी करा'}
+                    <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </div>
               </div>
 
               {/* Right Side Leadership Profiles */}
@@ -199,6 +210,15 @@ const Index = () => {
                 fill="hsl(var(--background))"
               />
             </svg>
+          </div>
+        </section>
+
+        {/* Info Panels Section - Below Hero */}
+        <section className="py-8 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <InfoPanels language={language} />
+            </div>
           </div>
         </section>
 
