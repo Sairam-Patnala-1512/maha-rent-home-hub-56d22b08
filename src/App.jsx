@@ -21,9 +21,21 @@ import AgreementConfirmation from './pages/tenant/AgreementConfirmation.jsx';
 
 // Landlord Pages
 import LandlordDashboard from './pages/landlord/LandlordDashboard.jsx';
+import LandlordProfile from './pages/landlord/LandlordProfile.jsx';
+import PropertyList from './pages/landlord/PropertyList.jsx';
+import AddProperty from './pages/landlord/AddProperty.jsx';
+import ApplicationsList from './pages/landlord/ApplicationsList.jsx';
+import ApplicationDetail from './pages/landlord/ApplicationDetail.jsx';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
+import GISMapView from './pages/admin/GISMapView.jsx';
+import InventoryList from './pages/admin/InventoryList.jsx';
+import ApplicationsMonitoring from './pages/admin/ApplicationsMonitoring.jsx';
+import UserDirectory from './pages/admin/UserDirectory.jsx';
+import AgreementRepository from './pages/admin/AgreementRepository.jsx';
+import GrievanceManagement from './pages/admin/GrievanceManagement.jsx';
+import AuditLogs from './pages/admin/AuditLogs.jsx';
 
 // Grievance Pages
 import GrievancePortal from './pages/grievance/GrievancePortal.jsx';
@@ -56,9 +68,21 @@ function App() {
             
             {/* Landlord Routes */}
             <Route path="/landlord/dashboard" element={<LandlordDashboard />} />
+            <Route path="/landlord/profile" element={<LandlordProfile />} />
+            <Route path="/landlord/properties" element={<PropertyList />} />
+            <Route path="/landlord/properties/add" element={<AddProperty />} />
+            <Route path="/landlord/applications" element={<ApplicationsList />} />
+            <Route path="/landlord/applications/:applicationId" element={<ApplicationDetail />} />
             
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/map" element={<GISMapView />} />
+            <Route path="/admin/inventory" element={<InventoryList />} />
+            <Route path="/admin/applications" element={<ApplicationsMonitoring />} />
+            <Route path="/admin/users" element={<UserDirectory />} />
+            <Route path="/admin/agreements" element={<AgreementRepository />} />
+            <Route path="/admin/grievances" element={<GrievanceManagement />} />
+            <Route path="/admin/audit-logs" element={<AuditLogs />} />
             
             {/* Grievance Routes */}
             <Route path="/grievance" element={<GrievancePortal />} />
