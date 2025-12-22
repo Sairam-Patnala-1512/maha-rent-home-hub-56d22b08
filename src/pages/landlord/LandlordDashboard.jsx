@@ -353,7 +353,12 @@ export default function LandlordDashboard() {
                   <p className="text-sm text-muted-foreground mb-4">
                     1 property is pending verification. Complete the process to go live.
                   </p>
-                  <Button variant="warning" size="sm" className="w-full">
+                  <Button 
+                    variant="warning" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => navigate("/landlord/verification")}
+                  >
                     Complete Now
                     <ArrowRight className="h-4 w-4" />
                   </Button>
