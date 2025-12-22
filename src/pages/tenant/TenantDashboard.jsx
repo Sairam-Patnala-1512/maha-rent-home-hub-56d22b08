@@ -4,9 +4,11 @@ import { GovHeader } from "@/components/shared/GovHeader";
 import { Footer } from "@/components/shared/Footer";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { ChatSupport } from "@/components/shared/ChatSupport";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import {
   Home,
   FileText,
@@ -19,11 +21,14 @@ import {
   Calendar,
   MapPin,
   AlertCircle,
+  ClipboardList,
+  PlayCircle,
 } from "lucide-react";
 
 export default function TenantDashboard() {
   const navigate = useNavigate();
   const [language, setLanguage] = useState("en");
+  const [chatOpen, setChatOpen] = useState(false);
 
   const user = {
     name: "Rahul Sharma",
@@ -219,7 +224,7 @@ export default function TenantDashboard() {
                 <CardContent className="grid grid-cols-2 gap-3">
                   <Button
                     variant="govOutline"
-                    className="h-auto py-4 flex-col gap-2"
+                    className="h-auto py-4 flex-col gap-2 relative"
                     onClick={() => navigate("/tenant/properties")}
                   >
                     <Search className="h-5 w-5" />
@@ -227,19 +232,25 @@ export default function TenantDashboard() {
                   </Button>
                   <Button
                     variant="govOutline"
-                    className="h-auto py-4 flex-col gap-2"
+                    className="h-auto py-4 flex-col gap-2 relative"
                     onClick={() => navigate("/tenant/applications")}
                   >
                     <FileText className="h-5 w-5" />
                     <span className="text-xs">My Applications</span>
+                    <Badge className="absolute -top-1 -right-1 h-5 min-w-5 text-[10px] px-1.5" variant="default">
+                      {applications.length}
+                    </Badge>
                   </Button>
                   <Button
                     variant="govOutline"
-                    className="h-auto py-4 flex-col gap-2"
+                    className="h-auto py-4 flex-col gap-2 relative"
                     onClick={() => navigate("/tenant/agreements")}
                   >
-                    <Calendar className="h-5 w-5" />
-                    <span className="text-xs">Agreements</span>
+                    <ClipboardList className="h-5 w-5" />
+                    <span className="text-xs">My Agreements</span>
+                    <Badge className="absolute -top-1 -right-1 h-5 min-w-5 text-[10px] px-1.5" variant="info">
+                      1
+                    </Badge>
                   </Button>
                   <Button
                     variant="govOutline"
@@ -285,12 +296,23 @@ export default function TenantDashboard() {
                   <p className="text-sm text-muted-foreground mb-4">
                     Our support team is available 24/7 to assist you with any queries.
                   </p>
-                  <Button variant="hero" size="sm" className="w-full">
+                  <Button variant="hero" size="sm" className="w-full" onClick={() => setChatOpen(true)}>
                     Chat with Support
                   </Button>
                 </CardContent>
               </Card>
             </div>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+      
+      {/* Chat Support Dialog */}
+      <ChatSupport open={chatOpen} onOpenChange={setChatOpen} />
+    </div>
+  );
+}
           </div>
         </div>
       </main>

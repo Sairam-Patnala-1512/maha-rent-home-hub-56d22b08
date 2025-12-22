@@ -16,6 +16,8 @@ import PropertySearch from './pages/tenant/PropertySearch.jsx';
 import PropertyDetails from './pages/tenant/PropertyDetails.jsx';
 import RentalApplication from './pages/tenant/RentalApplication.jsx';
 import ApplicationTracker from './pages/tenant/ApplicationTracker.jsx';
+import MyApplications from './pages/tenant/MyApplications.jsx';
+import MyAgreements from './pages/tenant/MyAgreements.jsx';
 import AgreementPreview from './pages/tenant/AgreementPreview.jsx';
 import AgreementConfirmation from './pages/tenant/AgreementConfirmation.jsx';
 
@@ -62,7 +64,10 @@ function App() {
             <Route path="/tenant/properties" element={<PropertySearch />} />
             <Route path="/tenant/properties/:propertyId" element={<PropertyDetails />} />
             <Route path="/tenant/apply/:propertyId" element={<RentalApplication />} />
+            <Route path="/tenant/applications" element={<MyApplications />} />
+            <Route path="/tenant/applications/:applicationId" element={<ApplicationTracker />} />
             <Route path="/tenant/applications/:applicationId/status" element={<ApplicationTracker />} />
+            <Route path="/tenant/agreements" element={<MyAgreements />} />
             <Route path="/tenant/agreements/:agreementId/preview" element={<AgreementPreview />} />
             <Route path="/tenant/agreements/:agreementId/confirmation" element={<AgreementConfirmation />} />
             

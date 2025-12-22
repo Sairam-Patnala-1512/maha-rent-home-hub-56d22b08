@@ -7,6 +7,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   MapPin,
   Bed,
@@ -18,7 +40,7 @@ import {
   Check,
   Phone,
   Mail,
-  Calendar,
+  Calendar as CalendarIcon,
   Shield,
   Home,
   Sofa,
@@ -34,8 +56,17 @@ import {
   ChevronLeft,
   ChevronRight,
   Maximize2,
+  X,
+  MessageSquare,
+  ZoomIn,
+  ZoomOut,
+  ExternalLink,
+  BadgeCheck,
+  Info,
+  CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 export default function PropertyDetails() {
   const navigate = useNavigate();
@@ -43,6 +74,16 @@ export default function PropertyDetails() {
   const [language, setLanguage] = useState("en");
   const [currentImage, setCurrentImage] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
+  
+  // Modal states
+  const [virtualTourOpen, setVirtualTourOpen] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [scheduleConfirmed, setScheduleConfirmed] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [messageSent, setMessageSent] = useState(false);
 
   const property = {
     id: id || "1",
@@ -93,6 +134,7 @@ The semi-furnished setup includes essential furniture, modular kitchen with chim
       responseTime: "Usually responds within 2 hours",
       memberSince: "2020",
       propertiesListed: 5,
+      phone: "+91 98XXX XXXXX",
     },
     nearbyPlaces: [
       { name: "Andheri Metro Station", distance: "500m" },
@@ -101,6 +143,32 @@ The semi-furnished setup includes essential furniture, modular kitchen with chim
       { name: "Apollo Hospital", distance: "1.2km" },
       { name: "St. Xavier's School", distance: "800m" },
     ],
+    verification: {
+      verifiedBy: "MHADA / Government Authority",
+      verificationType: "Property ownership & listing details",
+      verificationDate: "Dec 10, 2024",
+    },
+    coordinates: {
+      lat: 19.1334,
+      lng: 72.8263,
+    },
+  };
+
+  const timeSlots = [
+    "10:00 AM", "11:00 AM", "12:00 PM", 
+    "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"
+  ];
+
+  const handleScheduleVisit = () => {
+    if (selectedDate && selectedTime) {
+      setScheduleConfirmed(true);
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (contactMessage.trim()) {
+      setMessageSent(true);
+    }
   };
 
   const nextImage = () => {
@@ -211,9 +279,42 @@ The semi-furnished setup includes essential furniture, modular kitchen with chim
                   ))}
                   <Badge variant="success">{property.furnishing}</Badge>
                 </div>
-                <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                  {property.title}
-                </h1>
+                <div className="flex items-center gap-3 mb-2">
+                  <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+                    {property.title}
+                  </h1>
+                  {/* Verified Property Badge */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success/10 border border-success/30 cursor-help">
+                        <BadgeCheck className="h-4 w-4 text-success" />
+                        <span className="text-xs font-medium text-success">Verified Property</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs p-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Shield className="h-4 w-4 text-success" />
+                          <span className="font-semibold text-sm">Property Verification</span>
+                        </div>
+                        <div className="space-y-1.5 text-xs">
+                          <p className="flex justify-between">
+                            <span className="text-muted-foreground">Verified by:</span>
+                            <span className="font-medium">{property.verification.verifiedBy}</span>
+                          </p>
+                          <p className="flex justify-between">
+                            <span className="text-muted-foreground">Type:</span>
+                            <span className="font-medium">{property.verification.verificationType}</span>
+                          </p>
+                          <p className="flex justify-between">
+                            <span className="text-muted-foreground">Date:</span>
+                            <span className="font-medium">{property.verification.verificationDate}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <MapPin className="h-4 w-4" />
                   <span>{property.address}, {property.city} - {property.pincode}</span>
@@ -371,10 +472,33 @@ The semi-furnished setup includes essential furniture, modular kitchen with chim
                       <CardTitle className="text-lg">Location & Nearby</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="aspect-[16/9] rounded-lg bg-muted flex items-center justify-center mb-6">
-                        <div className="text-center">
-                          <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-                          <p className="text-muted-foreground">Map view</p>
+                      {/* Interactive Map Section */}
+                      <div className="aspect-[16/9] rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-dashed border-primary/20 flex flex-col items-center justify-center mb-4 relative overflow-hidden">
+                        <div className="absolute inset-0 opacity-20">
+                          <div className="absolute top-1/4 left-1/3 w-3 h-3 rounded-full bg-primary animate-pulse" />
+                          <div className="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-primary" />
+                          <div className="absolute top-1/3 right-1/4 w-2 h-2 rounded-full bg-muted-foreground" />
+                        </div>
+                        <div className="relative z-10 text-center p-4">
+                          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                            <MapPin className="h-8 w-8 text-primary" />
+                          </div>
+                          <h4 className="font-semibold mb-1">{property.locality}, {property.city}</h4>
+                          <p className="text-sm text-muted-foreground mb-4">{property.address}</p>
+                          <div className="flex items-center justify-center gap-2">
+                            <Button variant="outline" size="sm">
+                              <ZoomIn className="h-4 w-4 mr-1" />
+                              Zoom In
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              <ZoomOut className="h-4 w-4 mr-1" />
+                              Zoom Out
+                            </Button>
+                            <Button size="sm">
+                              <ExternalLink className="h-4 w-4 mr-1" />
+                              Open in Maps
+                            </Button>
+                          </div>
                         </div>
                       </div>
                       <h4 className="font-medium mb-3">Nearby Places</h4>
@@ -422,11 +546,12 @@ The semi-furnished setup includes essential furniture, modular kitchen with chim
                     <Button className="w-full" size="lg" onClick={() => navigate(`/tenant/apply/${property.id}`)}>
                       Apply Now
                     </Button>
-                    <Button variant="outline" className="w-full" size="lg">
+                    <Button variant="outline" className="w-full" size="lg" onClick={() => setContactModalOpen(true)}>
                       <Phone className="h-4 w-4 mr-2" />
                       Contact Landlord
                     </Button>
-                    <Button variant="outline" className="w-full" size="lg">
+                    <Button variant="outline" className="w-full" size="lg" onClick={() => setScheduleModalOpen(true)}>
+                      <CalendarIcon className="h-4 w-4 mr-2" />
                       Schedule Visit
                     </Button>
                   </div>
@@ -464,6 +589,107 @@ The semi-furnished setup includes essential furniture, modular kitchen with chim
       </main>
 
       <Footer />
+
+      {/* Virtual Tour Modal */}
+      <Dialog open={virtualTourOpen} onOpenChange={setVirtualTourOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Virtual Tour</DialogTitle>
+            <DialogDescription>360° view of {property.title}</DialogDescription>
+          </DialogHeader>
+          <div className="aspect-video rounded-lg bg-muted flex items-center justify-center">
+            <div className="text-center">
+              <Play className="h-16 w-16 text-primary mx-auto mb-3" />
+              <p className="text-muted-foreground">Virtual tour preview</p>
+              <p className="text-xs text-muted-foreground mt-1">(Demo placeholder)</p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Contact Landlord Modal */}
+      <Dialog open={contactModalOpen} onOpenChange={(open) => { setContactModalOpen(open); if (!open) { setMessageSent(false); setContactMessage(""); } }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Contact Landlord</DialogTitle>
+            <DialogDescription>Get in touch with {property.landlord.name}</DialogDescription>
+          </DialogHeader>
+          {messageSent ? (
+            <div className="py-8 text-center">
+              <CheckCircle2 className="h-12 w-12 text-success mx-auto mb-3" />
+              <h4 className="font-semibold mb-1">Message Sent!</h4>
+              <p className="text-sm text-muted-foreground">The landlord will respond within 24-48 hours.</p>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                  <Phone className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-sm font-medium">Phone (Masked)</p>
+                    <p className="text-xs text-muted-foreground">{property.landlord.phone}</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>Send a Message</Label>
+                  <Textarea placeholder="Hi, I'm interested in this property..." value={contactMessage} onChange={(e) => setContactMessage(e.target.value)} rows={4} />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setContactModalOpen(false)}>Cancel</Button>
+                <Button onClick={handleSendMessage} disabled={!contactMessage.trim()}>
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Send Message
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Schedule Visit Modal */}
+      <Dialog open={scheduleModalOpen} onOpenChange={(open) => { setScheduleModalOpen(open); if (!open) { setScheduleConfirmed(false); setSelectedDate(null); setSelectedTime(""); } }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Schedule a Visit</DialogTitle>
+            <DialogDescription>Select a date and time to visit this property</DialogDescription>
+          </DialogHeader>
+          {scheduleConfirmed ? (
+            <div className="py-8 text-center">
+              <CheckCircle2 className="h-12 w-12 text-success mx-auto mb-3" />
+              <h4 className="font-semibold mb-1">Visit Scheduled!</h4>
+              <p className="text-sm text-muted-foreground">{format(selectedDate, "PPP")} at {selectedTime}</p>
+              <p className="text-xs text-muted-foreground mt-2">You'll receive a confirmation shortly.</p>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-4">
+                <div>
+                  <Label className="mb-2 block">Select Date</Label>
+                  <Calendar mode="single" selected={selectedDate} onSelect={setSelectedDate} disabled={(date) => date < new Date()} className="rounded-md border pointer-events-auto" />
+                </div>
+                <div>
+                  <Label className="mb-2 block">Select Time</Label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {timeSlots.map((time) => (
+                      <Button key={time} variant={selectedTime === time ? "default" : "outline"} size="sm" onClick={() => setSelectedTime(time)} className="text-xs">
+                        {time}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setScheduleModalOpen(false)}>Cancel</Button>
+                <Button onClick={handleScheduleVisit} disabled={!selectedDate || !selectedTime}>
+                  <CalendarIcon className="h-4 w-4 mr-2" />
+                  Confirm Visit
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
