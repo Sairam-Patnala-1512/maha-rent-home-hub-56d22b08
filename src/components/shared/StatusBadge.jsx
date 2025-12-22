@@ -13,6 +13,7 @@ const statusConfig = {
   approved: { label: 'Approved', variant: 'success', icon: CheckCircle2 },
   occupied: { label: 'Occupied', variant: 'info', icon: Home },
   vacant: { label: 'Vacant', variant: 'success', icon: Home },
+  submitted: { label: 'Submitted', variant: 'info', icon: FileCheck },
 };
 
 export function StatusBadge({ status, showIcon = true, className }) {
