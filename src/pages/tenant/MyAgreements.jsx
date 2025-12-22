@@ -190,7 +190,7 @@ export default function MyAgreements() {
                           {agreement.status === "pending-signature" ? (
                             <Button
                               size="sm"
-                              onClick={() => navigate(`/tenant/agreements/${agreement.id}/preview`)}
+                              onClick={() => navigate(`/tenant/agreements/${agreement.id}/sign`)}
                             >
                               <PenLine className="h-4 w-4 mr-1" />
                               Sign Agreement

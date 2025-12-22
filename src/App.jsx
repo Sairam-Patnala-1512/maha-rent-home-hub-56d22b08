@@ -20,6 +20,8 @@ import MyApplications from './pages/tenant/MyApplications.jsx';
 import MyAgreements from './pages/tenant/MyAgreements.jsx';
 import AgreementPreview from './pages/tenant/AgreementPreview.jsx';
 import AgreementConfirmation from './pages/tenant/AgreementConfirmation.jsx';
+import ProfileVerification from './pages/tenant/ProfileVerification.jsx';
+import AgreementSign from './pages/tenant/AgreementSign.jsx';
 
 // Landlord Pages
 import LandlordDashboard from './pages/landlord/LandlordDashboard.jsx';
@@ -70,6 +72,8 @@ function App() {
             <Route path="/tenant/agreements" element={<MyAgreements />} />
             <Route path="/tenant/agreements/:agreementId/preview" element={<AgreementPreview />} />
             <Route path="/tenant/agreements/:agreementId/confirmation" element={<AgreementConfirmation />} />
+            <Route path="/tenant/agreements/:agreementId/sign" element={<AgreementSign />} />
+            <Route path="/tenant/verification" element={<ProfileVerification />} />
             
             {/* Landlord Routes */}
             <Route path="/landlord/dashboard" element={<LandlordDashboard />} />

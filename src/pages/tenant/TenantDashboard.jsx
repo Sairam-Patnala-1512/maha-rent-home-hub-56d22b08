@@ -155,7 +155,7 @@ export default function TenantDashboard() {
                     </div>
                   </div>
                   
-                  <Button variant="default" className="mt-4" size="sm">
+                  <Button variant="default" className="mt-4" size="sm" onClick={() => navigate("/tenant/verification")}>
                     Complete Verification
                     <ArrowRight className="h-4 w-4" />
                   </Button>
