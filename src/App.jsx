@@ -13,6 +13,7 @@ import NotFound from './pages/NotFound.jsx';
 // Tenant Pages
 import TenantDashboard from './pages/tenant/TenantDashboard.jsx';
 import PropertySearch from './pages/tenant/PropertySearch.jsx';
+import PropertyMapView from './pages/tenant/PropertyMapView.jsx';
 import PropertyDetails from './pages/tenant/PropertyDetails.jsx';
 import RentalApplication from './pages/tenant/RentalApplication.jsx';
 import ApplicationTracker from './pages/tenant/ApplicationTracker.jsx';
@@ -72,6 +73,7 @@ function App() {
             {/* Tenant Routes */}
             <Route path="/tenant/dashboard" element={<TenantDashboard />} />
             <Route path="/tenant/properties" element={<PropertySearch />} />
+            <Route path="/tenant/properties/map" element={<PropertyMapView />} />
             <Route path="/tenant/properties/:propertyId" element={<PropertyDetails />} />
             <Route path="/tenant/apply/:propertyId" element={<RentalApplication />} />
             <Route path="/tenant/applications" element={<MyApplications />} />

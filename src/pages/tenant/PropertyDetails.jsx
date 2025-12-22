@@ -64,6 +64,7 @@ import {
   BadgeCheck,
   Info,
   CheckCircle2,
+  RotateCcw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -258,7 +259,10 @@ The semi-furnished setup includes essential furniture, modular kitchen with chim
                   <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
-              <button className="aspect-[4/3] rounded-lg overflow-hidden bg-muted flex flex-col items-center justify-center gap-2 hover:bg-muted/80 transition-colors">
+              <button 
+                className="aspect-[4/3] rounded-lg overflow-hidden bg-muted flex flex-col items-center justify-center gap-2 hover:bg-muted/80 transition-colors"
+                onClick={() => setVirtualTourOpen(true)}
+              >
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                   <Play className="h-6 w-6 text-primary" />
                 </div>
@@ -592,17 +596,102 @@ The semi-furnished setup includes essential furniture, modular kitchen with chim
 
       {/* Virtual Tour Modal */}
       <Dialog open={virtualTourOpen} onOpenChange={setVirtualTourOpen}>
-        <DialogContent className="sm:max-w-2xl">
+        <DialogContent className="sm:max-w-4xl max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle>Virtual Tour</DialogTitle>
-            <DialogDescription>360° view of {property.title}</DialogDescription>
+            <DialogTitle className="flex items-center gap-2">
+              <Play className="h-5 w-5 text-primary" />
+              Virtual Tour
+            </DialogTitle>
+            <DialogDescription>360° walkthrough of {property.title}</DialogDescription>
           </DialogHeader>
-          <div className="aspect-video rounded-lg bg-muted flex items-center justify-center">
-            <div className="text-center">
-              <Play className="h-16 w-16 text-primary mx-auto mb-3" />
-              <p className="text-muted-foreground">Virtual tour preview</p>
-              <p className="text-xs text-muted-foreground mt-1">(Demo placeholder)</p>
+          
+          {/* Virtual Tour Viewer */}
+          <div className="relative aspect-video rounded-lg bg-gradient-to-br from-muted via-muted/80 to-muted overflow-hidden">
+            {/* Mock 360 View */}
+            <div className="absolute inset-0">
+              <img
+                src={property.images[0]}
+                alt="Virtual Tour View"
+                className="w-full h-full object-cover"
+              />
+              {/* Overlay for 360 effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-background/20" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/30" />
             </div>
+            
+            {/* Room Labels */}
+            <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-card/90 backdrop-blur-sm text-sm font-medium">
+              Living Room
+            </div>
+            
+            {/* Hotspot Indicators */}
+            <button className="absolute top-1/3 left-1/4 w-8 h-8 rounded-full bg-primary/80 backdrop-blur-sm flex items-center justify-center animate-pulse hover:bg-primary transition-colors">
+              <span className="text-primary-foreground text-xs font-bold">1</span>
+            </button>
+            <button className="absolute top-1/2 right-1/3 w-8 h-8 rounded-full bg-primary/80 backdrop-blur-sm flex items-center justify-center animate-pulse hover:bg-primary transition-colors" style={{ animationDelay: '0.5s' }}>
+              <span className="text-primary-foreground text-xs font-bold">2</span>
+            </button>
+            <button className="absolute bottom-1/3 left-1/2 w-8 h-8 rounded-full bg-primary/80 backdrop-blur-sm flex items-center justify-center animate-pulse hover:bg-primary transition-colors" style={{ animationDelay: '1s' }}>
+              <span className="text-primary-foreground text-xs font-bold">3</span>
+            </button>
+            
+            {/* Center Play Icon for Demo */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center bg-card/80 backdrop-blur-sm rounded-xl p-6">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <Play className="h-8 w-8 text-primary" />
+                </div>
+                <p className="font-medium">360° Virtual Tour</p>
+                <p className="text-xs text-muted-foreground mt-1">Click hotspots to explore rooms</p>
+              </div>
+            </div>
+            
+            {/* Tour Controls */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 bg-card/90 backdrop-blur-sm rounded-full px-4 py-2">
+              <button className="p-2 hover:bg-muted rounded-full transition-colors" title="Zoom Out">
+                <ZoomOut className="h-4 w-4" />
+              </button>
+              <div className="w-px h-6 bg-border" />
+              <button className="p-2 hover:bg-muted rounded-full transition-colors" title="Rotate Left">
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button className="p-2 hover:bg-muted rounded-full transition-colors" title="Rotate Right">
+                <ChevronRight className="h-4 w-4" />
+              </button>
+              <div className="w-px h-6 bg-border" />
+              <button className="p-2 hover:bg-muted rounded-full transition-colors" title="Zoom In">
+                <ZoomIn className="h-4 w-4" />
+              </button>
+              <div className="w-px h-6 bg-border" />
+              <button className="p-2 hover:bg-muted rounded-full transition-colors" title="Fullscreen">
+                <Maximize2 className="h-4 w-4" />
+              </button>
+            </div>
+            
+            {/* Room Navigator */}
+            <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm rounded-lg p-2 space-y-1">
+              <button className="w-full px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
+                Living Room
+              </button>
+              <button className="w-full px-3 py-1.5 text-xs font-medium bg-muted hover:bg-muted/80 rounded transition-colors">
+                Bedroom 1
+              </button>
+              <button className="w-full px-3 py-1.5 text-xs font-medium bg-muted hover:bg-muted/80 rounded transition-colors">
+                Bedroom 2
+              </button>
+              <button className="w-full px-3 py-1.5 text-xs font-medium bg-muted hover:bg-muted/80 rounded transition-colors">
+                Kitchen
+              </button>
+              <button className="w-full px-3 py-1.5 text-xs font-medium bg-muted hover:bg-muted/80 rounded transition-colors">
+                Bathroom
+              </button>
+            </div>
+          </div>
+          
+          {/* Tour Info */}
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <p>Use controls to navigate • Click hotspots to explore</p>
+            <p className="text-xs">Demo Mode - PoC Placeholder</p>
           </div>
         </DialogContent>
       </Dialog>
