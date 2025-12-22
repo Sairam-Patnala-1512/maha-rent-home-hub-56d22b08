@@ -36,6 +36,8 @@ import ApplicationsList from './pages/landlord/ApplicationsList.jsx';
 import ApplicationDetail from './pages/landlord/ApplicationDetail.jsx';
 import LandlordAgreements from './pages/landlord/LandlordAgreements.jsx';
 import LandlordSettings from './pages/landlord/LandlordSettings.jsx';
+import LandlordVerification from './pages/landlord/LandlordVerification.jsx';
+
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import GISMapView from './pages/admin/GISMapView.jsx';
@@ -94,6 +96,7 @@ function App() {
             <Route path="/landlord/applications/:applicationId" element={<ApplicationDetail />} />
             <Route path="/landlord/agreements" element={<LandlordAgreements />} />
             <Route path="/landlord/settings" element={<LandlordSettings />} />
+            <Route path="/landlord/verification" element={<LandlordVerification />} />
             
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
