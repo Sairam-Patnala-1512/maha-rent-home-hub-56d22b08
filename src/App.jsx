@@ -27,9 +27,12 @@ import AgreementSign from './pages/tenant/AgreementSign.jsx';
 import LandlordDashboard from './pages/landlord/LandlordDashboard.jsx';
 import LandlordProfile from './pages/landlord/LandlordProfile.jsx';
 import PropertyList from './pages/landlord/PropertyList.jsx';
+import PropertyDetail from './pages/landlord/PropertyDetail.jsx';
+import EditProperty from './pages/landlord/EditProperty.jsx';
 import AddProperty from './pages/landlord/AddProperty.jsx';
 import ApplicationsList from './pages/landlord/ApplicationsList.jsx';
 import ApplicationDetail from './pages/landlord/ApplicationDetail.jsx';
+import LandlordAgreements from './pages/landlord/LandlordAgreements.jsx';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
@@ -75,13 +78,16 @@ function App() {
             <Route path="/tenant/agreements/:agreementId/sign" element={<AgreementSign />} />
             <Route path="/tenant/verification" element={<ProfileVerification />} />
             
-            {/* Landlord Routes */}
+{/* Landlord Routes */}
             <Route path="/landlord/dashboard" element={<LandlordDashboard />} />
             <Route path="/landlord/profile" element={<LandlordProfile />} />
             <Route path="/landlord/properties" element={<PropertyList />} />
             <Route path="/landlord/properties/add" element={<AddProperty />} />
+            <Route path="/landlord/properties/:propertyId" element={<PropertyDetail />} />
+            <Route path="/landlord/properties/:propertyId/edit" element={<EditProperty />} />
             <Route path="/landlord/applications" element={<ApplicationsList />} />
             <Route path="/landlord/applications/:applicationId" element={<ApplicationDetail />} />
+            <Route path="/landlord/agreements" element={<LandlordAgreements />} />
             
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
