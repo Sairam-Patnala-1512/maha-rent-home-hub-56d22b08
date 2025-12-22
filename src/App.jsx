@@ -35,7 +35,7 @@ import AddProperty from './pages/landlord/AddProperty.jsx';
 import ApplicationsList from './pages/landlord/ApplicationsList.jsx';
 import ApplicationDetail from './pages/landlord/ApplicationDetail.jsx';
 import LandlordAgreements from './pages/landlord/LandlordAgreements.jsx';
-
+import LandlordSettings from './pages/landlord/LandlordSettings.jsx';
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import GISMapView from './pages/admin/GISMapView.jsx';
@@ -45,7 +45,8 @@ import UserDirectory from './pages/admin/UserDirectory.jsx';
 import AgreementRepository from './pages/admin/AgreementRepository.jsx';
 import GrievanceManagement from './pages/admin/GrievanceManagement.jsx';
 import AuditLogs from './pages/admin/AuditLogs.jsx';
-
+import AdminProfile from './pages/admin/AdminProfile.jsx';
+import AdminSettings from './pages/admin/AdminSettings.jsx';
 // Grievance Pages
 import GrievancePortal from './pages/grievance/GrievancePortal.jsx';
 import RaiseGrievance from './pages/grievance/RaiseGrievance.jsx';
@@ -92,6 +93,7 @@ function App() {
             <Route path="/landlord/applications" element={<ApplicationsList />} />
             <Route path="/landlord/applications/:applicationId" element={<ApplicationDetail />} />
             <Route path="/landlord/agreements" element={<LandlordAgreements />} />
+            <Route path="/landlord/settings" element={<LandlordSettings />} />
             
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
@@ -102,6 +104,8 @@ function App() {
             <Route path="/admin/agreements" element={<AgreementRepository />} />
             <Route path="/admin/grievances" element={<GrievanceManagement />} />
             <Route path="/admin/audit-logs" element={<AuditLogs />} />
+            <Route path="/admin/profile" element={<AdminProfile />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
             
             {/* Grievance Routes */}
             <Route path="/grievance" element={<GrievancePortal />} />
