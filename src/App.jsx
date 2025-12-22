@@ -22,6 +22,8 @@ import AgreementPreview from './pages/tenant/AgreementPreview.jsx';
 import AgreementConfirmation from './pages/tenant/AgreementConfirmation.jsx';
 import ProfileVerification from './pages/tenant/ProfileVerification.jsx';
 import AgreementSign from './pages/tenant/AgreementSign.jsx';
+import TenantProfile from './pages/tenant/TenantProfile.jsx';
+import TenantSettings from './pages/tenant/TenantSettings.jsx';
 
 // Landlord Pages
 import LandlordDashboard from './pages/landlord/LandlordDashboard.jsx';
@@ -77,6 +79,8 @@ function App() {
             <Route path="/tenant/agreements/:agreementId/confirmation" element={<AgreementConfirmation />} />
             <Route path="/tenant/agreements/:agreementId/sign" element={<AgreementSign />} />
             <Route path="/tenant/verification" element={<ProfileVerification />} />
+            <Route path="/tenant/profile" element={<TenantProfile />} />
+            <Route path="/tenant/settings" element={<TenantSettings />} />
             
 {/* Landlord Routes */}
             <Route path="/landlord/dashboard" element={<LandlordDashboard />} />

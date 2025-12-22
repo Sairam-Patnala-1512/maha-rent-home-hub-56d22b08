@@ -8,6 +8,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Globe, Menu, User, LogOut, Settings, Bell, X, ChevronDown, Phone, Search, Mic } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import mhadaLogo from '@/assets/mhada-logo.png';
@@ -22,6 +32,7 @@ export function GovHeader({
   currentLanguage = 'en'
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   const roleLabels = {
@@ -193,12 +204,33 @@ export function GovHeader({
                       Settings
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate('/login')} className="text-destructive">
+                    <DropdownMenuItem onClick={() => setLogoutDialogOpen(true)} className="text-destructive">
                       <LogOut className="mr-2 h-4 w-4" />
                       Sign Out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+
+                {/* Logout Confirmation Dialog */}
+                <AlertDialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        You will be redirected to the landing page. Any unsaved changes may be lost.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => navigate('/')}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Logout
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </>
             ) : showAuth ? (
               <div className="flex items-center gap-2">
