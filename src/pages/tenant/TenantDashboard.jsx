@@ -313,11 +313,3 @@ export default function TenantDashboard() {
     </div>
   );
 }
-          </div>
-        </div>
-      </main>
-
-      <Footer />
-    </div>
-  );
-}
