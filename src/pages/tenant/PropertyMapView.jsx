@@ -26,10 +26,15 @@ export default function PropertyMapView() {
   const [language, setLanguage] = useState("en");
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [hoveredProperty, setHoveredProperty] = useState(null);
-  const [zoomLevel, setZoomLevel] = useState(12);
+  const [zoomLevel, setZoomLevel] = useState(10);
   const [isZooming, setIsZooming] = useState(false);
   const [mapCenter, setMapCenter] = useState({ x: 50, y: 50 });
   const [visibleProperties, setVisibleProperties] = useState([]);
+  const [expandedCluster, setExpandedCluster] = useState(null);
+  const [controlsVisible, setControlsVisible] = useState(true);
+  
+  // Cluster threshold - show clusters below this zoom level
+  const CLUSTER_ZOOM_THRESHOLD = 13;
 
   const properties = [
     {
@@ -124,11 +129,56 @@ export default function PropertyMapView() {
     },
   ];
 
+  // Generate clusters based on proximity
+  const generateClusters = useCallback((props) => {
+    if (zoomLevel >= CLUSTER_ZOOM_THRESHOLD) return { clusters: [], individual: props };
+    
+    const clusterRadius = 15; // percentage distance for clustering
+    const clusters = [];
+    const used = new Set();
+    
+    props.forEach((p, i) => {
+      if (used.has(i)) return;
+      
+      const pTop = parseFloat(p.coordinates.top);
+      const pLeft = parseFloat(p.coordinates.left);
+      const clusterMembers = [p];
+      used.add(i);
+      
+      props.forEach((other, j) => {
+        if (i === j || used.has(j)) return;
+        const oTop = parseFloat(other.coordinates.top);
+        const oLeft = parseFloat(other.coordinates.left);
+        const distance = Math.sqrt(Math.pow(pTop - oTop, 2) + Math.pow(pLeft - oLeft, 2));
+        
+        if (distance < clusterRadius) {
+          clusterMembers.push(other);
+          used.add(j);
+        }
+      });
+      
+      if (clusterMembers.length > 1) {
+        // Calculate cluster center
+        const avgTop = clusterMembers.reduce((sum, m) => sum + parseFloat(m.coordinates.top), 0) / clusterMembers.length;
+        const avgLeft = clusterMembers.reduce((sum, m) => sum + parseFloat(m.coordinates.left), 0) / clusterMembers.length;
+        clusters.push({
+          id: `cluster-${i}`,
+          members: clusterMembers,
+          coordinates: { top: `${avgTop}%`, left: `${avgLeft}%` },
+          count: clusterMembers.length
+        });
+      } else {
+        clusters.push({ ...p, isIndividual: true });
+      }
+    });
+    
+    return { clusters, individual: [] };
+  }, [zoomLevel, CLUSTER_ZOOM_THRESHOLD]);
+
   // Simulate visibility based on zoom level
   useEffect(() => {
     const calculateVisibleProperties = () => {
-      // At higher zoom levels, fewer properties are "in view"
-      const visibilityRadius = Math.max(30, 100 - (zoomLevel - 8) * 10);
+      const visibilityRadius = Math.max(40, 100 - (zoomLevel - 8) * 8);
       const visible = properties.filter((p) => {
         const top = parseFloat(p.coordinates.top);
         const left = parseFloat(p.coordinates.left);
@@ -141,6 +191,8 @@ export default function PropertyMapView() {
     };
     calculateVisibleProperties();
   }, [zoomLevel, mapCenter]);
+
+  const { clusters } = generateClusters(visibleProperties);
 
   const handleZoomIn = useCallback(() => {
     if (zoomLevel >= 18) return;
@@ -169,9 +221,42 @@ export default function PropertyMapView() {
 
   const handleRecenter = useCallback(() => {
     setMapCenter({ x: 50, y: 50 });
-    setZoomLevel(12);
+    setZoomLevel(10);
     setIsZooming(true);
+    setExpandedCluster(null);
     setTimeout(() => setIsZooming(false), 300);
+  }, []);
+
+  const handleClusterClick = useCallback((cluster) => {
+    if (expandedCluster?.id === cluster.id) {
+      setExpandedCluster(null);
+    } else {
+      setExpandedCluster(cluster);
+      // Zoom in to show individual pins
+      if (zoomLevel < CLUSTER_ZOOM_THRESHOLD) {
+        setZoomLevel(CLUSTER_ZOOM_THRESHOLD);
+        setIsZooming(true);
+        setTimeout(() => setIsZooming(false), 300);
+      }
+    }
+  }, [expandedCluster, zoomLevel, CLUSTER_ZOOM_THRESHOLD]);
+
+  // Auto-hide controls after inactivity
+  useEffect(() => {
+    let timeout;
+    const showControls = () => {
+      setControlsVisible(true);
+      clearTimeout(timeout);
+      timeout = setTimeout(() => setControlsVisible(false), 3000);
+    };
+    
+    window.addEventListener('mousemove', showControls);
+    showControls();
+    
+    return () => {
+      window.removeEventListener('mousemove', showControls);
+      clearTimeout(timeout);
+    };
   }, []);
 
   // Keyboard support for closing
@@ -228,7 +313,7 @@ export default function PropertyMapView() {
 
         {/* Map Container - Full Height */}
         <div className="flex-1 relative overflow-hidden" onClick={handleMapClick}>
-          {/* Maharashtra State Map Background */}
+          {/* Maharashtra State Map Background - Calmer, subdued styling */}
           <div 
             data-map-background
             className={cn(
@@ -237,126 +322,112 @@ export default function PropertyMapView() {
             )}
             style={{ transform: `scale(${zoomScale})` }}
           >
-            {/* Base Map Layer - Neutral terrain */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[hsl(45,15%,92%)] via-[hsl(45,12%,88%)] to-[hsl(45,10%,85%)]" />
+            {/* Base Map Layer - Very soft neutral terrain */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[hsl(45,8%,94%)] via-[hsl(45,6%,91%)] to-[hsl(45,5%,88%)]" />
             
-            {/* Maharashtra State Outline SVG */}
+            {/* Maharashtra State Outline SVG - Reduced contrast */}
             <svg 
               viewBox="0 0 800 600" 
               className="absolute inset-0 w-full h-full"
               preserveAspectRatio="xMidYMid slice"
             >
-              {/* State Boundary */}
+              {/* State Boundary - Subtler */}
               <path
                 d="M150,100 Q200,80 280,90 L350,70 Q400,85 450,75 L520,95 Q560,90 600,110 L650,130 Q680,160 700,200 L720,280 Q710,340 680,400 L650,450 Q600,480 550,490 L480,500 Q420,510 360,495 L280,480 Q220,460 180,420 L140,360 Q110,300 120,240 L130,180 Q140,140 150,100 Z"
                 fill="none"
-                stroke="hsl(var(--muted-foreground) / 0.3)"
-                strokeWidth="3"
-                strokeDasharray="8,4"
+                stroke="hsl(var(--muted-foreground) / 0.15)"
+                strokeWidth="2"
+                strokeDasharray="6,4"
               />
               
-              {/* Major Districts - Subtle fills */}
+              {/* Major Districts - Very subtle fills */}
               <path
                 d="M350,150 Q400,140 450,160 L480,200 Q470,250 440,280 L380,290 Q340,270 330,230 L340,180 Q345,160 350,150 Z"
-                fill="hsl(var(--primary) / 0.05)"
-                stroke="hsl(var(--muted-foreground) / 0.15)"
+                fill="hsl(var(--muted-foreground) / 0.02)"
+                stroke="hsl(var(--muted-foreground) / 0.08)"
                 strokeWidth="1"
               />
               <path
                 d="M200,280 Q250,260 300,280 L340,330 Q330,380 290,400 L230,390 Q190,360 200,310 L200,280 Z"
-                fill="hsl(var(--primary) / 0.03)"
-                stroke="hsl(var(--muted-foreground) / 0.15)"
+                fill="hsl(var(--muted-foreground) / 0.015)"
+                stroke="hsl(var(--muted-foreground) / 0.08)"
                 strokeWidth="1"
               />
               <path
                 d="M480,300 Q530,280 580,310 L600,370 Q580,420 540,440 L480,430 Q450,400 460,350 L480,300 Z"
-                fill="hsl(var(--primary) / 0.04)"
-                stroke="hsl(var(--muted-foreground) / 0.15)"
+                fill="hsl(var(--muted-foreground) / 0.02)"
+                stroke="hsl(var(--muted-foreground) / 0.08)"
                 strokeWidth="1"
               />
               
-              {/* Major Highways */}
+              {/* Major Highways - Much subtler */}
               <path
                 d="M180,200 Q280,220 380,200 Q480,180 580,220 L680,260"
                 fill="none"
-                stroke="hsl(35,80%,55%)"
-                strokeWidth="3"
-                opacity="0.6"
+                stroke="hsl(40,30%,75%)"
+                strokeWidth="2"
+                opacity="0.4"
               />
               <path
                 d="M300,120 Q340,200 360,300 Q380,400 400,480"
                 fill="none"
-                stroke="hsl(35,80%,55%)"
-                strokeWidth="3"
-                opacity="0.6"
+                stroke="hsl(40,30%,75%)"
+                strokeWidth="2"
+                opacity="0.4"
               />
               <path
                 d="M500,140 Q520,240 540,340 Q560,420 550,500"
                 fill="none"
-                stroke="hsl(35,70%,50%)"
-                strokeWidth="2"
-                opacity="0.5"
+                stroke="hsl(40,25%,70%)"
+                strokeWidth="1.5"
+                opacity="0.3"
               />
               
-              {/* Rivers */}
+              {/* Rivers - Very subtle */}
               <path
                 d="M120,320 Q200,300 280,320 Q360,340 440,310 Q520,280 600,300"
                 fill="none"
-                stroke="hsl(200,50%,70%)"
-                strokeWidth="2"
-                opacity="0.5"
+                stroke="hsl(200,30%,80%)"
+                strokeWidth="1.5"
+                opacity="0.3"
               />
               <path
                 d="M350,100 Q370,180 380,260 Q400,340 380,420"
                 fill="none"
-                stroke="hsl(200,50%,70%)"
-                strokeWidth="1.5"
-                opacity="0.4"
+                stroke="hsl(200,30%,80%)"
+                strokeWidth="1"
+                opacity="0.25"
               />
               
-              {/* City Labels */}
-              <g className="text-[10px] fill-muted-foreground/60 font-medium">
+              {/* Major City Labels Only - Subdued */}
+              <g className="text-[9px] fill-muted-foreground/40 font-medium">
                 <text x="380" y="170">Mumbai</text>
                 <text x="250" y="320">Pune</text>
                 <text x="520" y="250">Nashik</text>
-                <text x="550" y="380">Aurangabad</text>
-                <text x="220" y="420">Kolhapur</text>
                 <text x="600" y="180">Nagpur</text>
-                <text x="450" y="130">Thane</text>
               </g>
               
-              {/* City Markers */}
-              <circle cx="400" cy="180" r="6" fill="hsl(var(--primary))" opacity="0.4" />
-              <circle cx="270" cy="330" r="5" fill="hsl(var(--primary))" opacity="0.3" />
-              <circle cx="540" cy="260" r="4" fill="hsl(var(--primary))" opacity="0.3" />
-              <circle cx="570" cy="390" r="4" fill="hsl(var(--primary))" opacity="0.3" />
-              <circle cx="240" cy="430" r="4" fill="hsl(var(--primary))" opacity="0.3" />
-              <circle cx="620" cy="190" r="5" fill="hsl(var(--primary))" opacity="0.3" />
+              {/* City Markers - Very subtle */}
+              <circle cx="400" cy="180" r="4" fill="hsl(var(--muted-foreground))" opacity="0.15" />
+              <circle cx="270" cy="330" r="3" fill="hsl(var(--muted-foreground))" opacity="0.12" />
+              <circle cx="540" cy="260" r="3" fill="hsl(var(--muted-foreground))" opacity="0.12" />
+              <circle cx="620" cy="190" r="3" fill="hsl(var(--muted-foreground))" opacity="0.12" />
             </svg>
             
-            {/* Grid Overlay - Subtle coordinate lines */}
-            <div className="absolute inset-0 opacity-10">
+            {/* Grid Overlay - Very subtle */}
+            <div className="absolute inset-0 opacity-5">
               <div className="h-full w-full" style={{
                 backgroundImage: `
-                  linear-gradient(to right, hsl(var(--muted-foreground) / 0.15) 1px, transparent 1px),
-                  linear-gradient(to bottom, hsl(var(--muted-foreground) / 0.15) 1px, transparent 1px)
+                  linear-gradient(to right, hsl(var(--muted-foreground) / 0.1) 1px, transparent 1px),
+                  linear-gradient(to bottom, hsl(var(--muted-foreground) / 0.1) 1px, transparent 1px)
                 `,
-                backgroundSize: `${80 / zoomScale}px ${80 / zoomScale}px`
+                backgroundSize: `${100 / zoomScale}px ${100 / zoomScale}px`
               }} />
             </div>
             
-            {/* Terrain Texture Overlay */}
-            <div 
-              className="absolute inset-0 opacity-[0.03]"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-                backgroundSize: '200px 200px'
-              }}
-            />
-            
-            {/* Vignette Effect for depth */}
-            <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-background/20" />
-            <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-transparent to-background/30" />
+            {/* Subtle vignette */}
+            <div className="absolute inset-0 bg-gradient-to-r from-background/10 via-transparent to-background/10" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/15" />
           </div>
 
           {/* Map attribution */}
@@ -386,18 +457,61 @@ export default function PropertyMapView() {
             </div>
           )}
 
-          {/* Property Pins */}
-          {visibleProperties.map((property) => {
+          {/* Property Pins - Clustered or Individual based on zoom */}
+          {clusters.map((item) => {
+            // Render Cluster
+            if (!item.isIndividual && item.members) {
+              const isExpanded = expandedCluster?.id === item.id;
+              
+              return (
+                <div
+                  key={item.id}
+                  className={cn(
+                    "absolute z-10 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer",
+                    "transition-all duration-300 ease-out"
+                  )}
+                  style={{ 
+                    top: item.coordinates.top, 
+                    left: item.coordinates.left,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClusterClick(item);
+                  }}
+                >
+                  {/* Cluster Bubble */}
+                  <div className={cn(
+                    "relative flex items-center justify-center transition-all duration-300",
+                    "w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg",
+                    "hover:scale-110 hover:shadow-xl",
+                    isExpanded && "scale-110 ring-4 ring-primary/30"
+                  )}>
+                    <span className="font-bold text-sm">{item.count}</span>
+                    {/* Pulse ring */}
+                    <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping opacity-50" />
+                  </div>
+                  <p className="text-[10px] text-center text-muted-foreground mt-1 font-medium">
+                    {item.count} properties
+                  </p>
+                </div>
+              );
+            }
+            
+            // Render Individual Pin
+            const property = item;
             const isHovered = hoveredProperty === property.id;
             const isSelected = selectedProperty?.id === property.id;
+            const hasSelection = selectedProperty !== null;
+            const isDimmed = hasSelection && !isSelected && !isHovered;
             
             return (
               <div
                 key={property.id}
                 className={cn(
                   "absolute z-10 transform -translate-x-1/2 -translate-y-full cursor-pointer",
-                  "transition-all duration-200 ease-out",
-                  isSelected && "z-30"
+                  "transition-all duration-300 ease-out",
+                  isSelected && "z-30",
+                  isDimmed && "opacity-40 scale-90"
                 )}
                 style={{ 
                   top: property.coordinates.top, 
@@ -412,49 +526,52 @@ export default function PropertyMapView() {
               >
                 {/* Pin */}
                 <div className={cn(
-                  "relative flex flex-col items-center transition-transform duration-200",
-                  isHovered && !isSelected && "scale-110",
-                  isSelected && "scale-125"
+                  "relative flex flex-col items-center transition-all duration-300",
+                  isHovered && !isSelected && "scale-110 -translate-y-1",
+                  isSelected && "scale-125 -translate-y-2"
                 )}>
                   {/* Price Tag */}
                   <div className={cn(
-                    "px-2.5 py-1.5 rounded-lg font-semibold text-xs shadow-lg transition-all duration-200",
-                    "hover:shadow-xl",
+                    "px-2.5 py-1.5 rounded-lg font-semibold text-xs shadow-lg transition-all duration-300",
                     isSelected
-                      ? "bg-primary text-primary-foreground ring-2 ring-primary/30 ring-offset-2 ring-offset-background"
+                      ? "bg-primary text-primary-foreground ring-2 ring-primary/40 ring-offset-2 ring-offset-background shadow-primary/30"
                       : isHovered
-                        ? "bg-card text-primary border-2 border-primary shadow-primary/20"
-                        : "bg-card text-foreground border hover:border-primary/50"
+                        ? "bg-card text-primary border-2 border-primary shadow-xl"
+                        : isDimmed
+                          ? "bg-muted text-muted-foreground border border-muted-foreground/20"
+                          : "bg-card text-foreground border border-border/50 shadow-md"
                   )}>
                     ₹{(property.rent / 1000).toFixed(0)}K
                   </div>
                   
                   {/* Pin Point */}
                   <div className={cn(
-                    "w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent transition-colors",
+                    "w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent transition-colors duration-300",
                     isSelected
                       ? "border-t-primary"
                       : isHovered
-                        ? "border-t-primary/70"
-                        : "border-t-card"
+                        ? "border-t-primary/80"
+                        : isDimmed
+                          ? "border-t-muted"
+                          : "border-t-card"
                   )} />
                   
-                  {/* Pin Shadow - Animate on hover */}
+                  {/* Pin Shadow */}
                   <div className={cn(
-                    "rounded-full bg-foreground/20 mt-1 transition-all duration-200",
-                    isSelected ? "w-4 h-1.5" : isHovered ? "w-3.5 h-1" : "w-3 h-1"
+                    "rounded-full bg-foreground/15 mt-1 transition-all duration-300",
+                    isSelected ? "w-5 h-2" : isHovered ? "w-4 h-1.5" : "w-3 h-1"
                   )} />
 
-                  {/* Ripple effect for selected */}
+                  {/* Selected indicator */}
                   {isSelected && (
-                    <div className="absolute -inset-3 rounded-full border-2 border-primary/30 animate-ping pointer-events-none" />
+                    <div className="absolute -inset-4 rounded-full border-2 border-primary/20 animate-pulse pointer-events-none" />
                   )}
                 </div>
 
                 {/* Hover Card */}
                 {isHovered && !isSelected && (
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-3 z-40 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <Card className="w-52 shadow-xl border-primary/20">
+                    <Card className="w-52 shadow-xl border-primary/20 bg-card/98 backdrop-blur-sm">
                       <CardContent className="p-3">
                         <p className="font-medium text-sm truncate">{property.title}</p>
                         <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
@@ -485,13 +602,16 @@ export default function PropertyMapView() {
             );
           })}
 
-          {/* Zoom Controls */}
-          <div className="absolute top-4 right-4 flex flex-col gap-2 z-20">
+          {/* Zoom Controls - Auto-fade */}
+          <div className={cn(
+            "absolute top-4 right-4 flex flex-col gap-2 z-20 transition-opacity duration-500",
+            controlsVisible ? "opacity-100" : "opacity-40 hover:opacity-100"
+          )}>
             <Button 
               variant="outline" 
               size="icon" 
               className={cn(
-                "bg-card shadow-md transition-all",
+                "bg-card/95 backdrop-blur-sm shadow-md transition-all",
                 zoomLevel >= 18 ? "opacity-50 cursor-not-allowed" : "hover:bg-primary hover:text-primary-foreground"
               )}
               onClick={handleZoomIn}
@@ -503,7 +623,7 @@ export default function PropertyMapView() {
               variant="outline" 
               size="icon" 
               className={cn(
-                "bg-card shadow-md transition-all",
+                "bg-card/95 backdrop-blur-sm shadow-md transition-all",
                 zoomLevel <= 8 ? "opacity-50 cursor-not-allowed" : "hover:bg-primary hover:text-primary-foreground"
               )}
               onClick={handleZoomOut}
@@ -515,7 +635,7 @@ export default function PropertyMapView() {
             <Button 
               variant="outline" 
               size="icon" 
-              className="bg-card shadow-md hover:bg-primary hover:text-primary-foreground transition-all"
+              className="bg-card/95 backdrop-blur-sm shadow-md hover:bg-primary hover:text-primary-foreground transition-all"
               onClick={handleRecenter}
             >
               <Locate className="h-4 w-4" />
@@ -523,18 +643,19 @@ export default function PropertyMapView() {
             <Button 
               variant="outline" 
               size="icon" 
-              className="bg-card shadow-md hover:bg-primary hover:text-primary-foreground transition-all"
+              className="bg-card/95 backdrop-blur-sm shadow-md hover:bg-primary hover:text-primary-foreground transition-all"
             >
               <Layers className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* Zoom Level Indicator */}
+          {/* Zoom Level Indicator - Auto-fade */}
           <div className={cn(
-            "absolute top-4 left-4 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-md text-sm z-20 transition-all duration-200",
-            isZooming && "ring-2 ring-primary/50"
+            "absolute top-4 left-4 bg-card/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-md text-sm z-20 transition-all duration-500",
+            isZooming && "ring-2 ring-primary/50",
+            controlsVisible ? "opacity-100" : "opacity-40 hover:opacity-100"
           )}>
-            <span className="text-muted-foreground">Zoom:</span>{" "}
+            <span className="text-muted-foreground text-xs">Zoom:</span>{" "}
             <span className="font-medium">{zoomLevel}x</span>
             <div className="mt-1 h-1 bg-muted rounded-full overflow-hidden">
               <div 
