@@ -214,16 +214,8 @@ export default function AdminDashboard() {
 
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-lg">Property Distribution</CardTitle>
-                      <CardDescription>GIS Map View of Maharashtra</CardDescription>
-                    </div>
-                    <Button variant="govOutline" size="sm" onClick={() => navigate("/admin/map")}>
-                      <Map className="h-4 w-4 mr-1" />
-                      Full Map
-                    </Button>
-                  </div>
+                  <CardTitle className="text-lg">Property Distribution</CardTitle>
+                  <CardDescription>District-wise Verified & Pending Properties</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="h-72">
