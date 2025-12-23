@@ -46,6 +46,7 @@ import InventoryList from './pages/admin/InventoryList.jsx';
 import AdminPropertyDetail from './pages/admin/PropertyDetail.jsx';
 import ApplicationsMonitoring from './pages/admin/ApplicationsMonitoring.jsx';
 import UserDirectory from './pages/admin/UserDirectory.jsx';
+import UserDetail from './pages/admin/UserDetail.jsx';
 import AgreementRepository from './pages/admin/AgreementRepository.jsx';
 import GrievanceManagement from './pages/admin/GrievanceManagement.jsx';
 import AuditLogs from './pages/admin/AuditLogs.jsx';
@@ -110,6 +111,7 @@ function App() {
             <Route path="/admin/properties/:propertyId" element={<AdminPropertyDetail />} />
             <Route path="/admin/applications" element={<ApplicationsMonitoring />} />
             <Route path="/admin/users" element={<UserDirectory />} />
+            <Route path="/admin/users/:userType/:userId" element={<UserDetail />} />
             <Route path="/admin/agreements" element={<AgreementRepository />} />
             <Route path="/admin/grievances" element={<GrievanceManagement />} />
             <Route path="/admin/audit-logs" element={<AuditLogs />} />
