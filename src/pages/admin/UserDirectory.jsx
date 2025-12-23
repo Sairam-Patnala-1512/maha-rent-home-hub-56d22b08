@@ -145,7 +145,11 @@ export default function UserDirectory() {
                             <StatusBadge status={user.status} />
                           </TableCell>
                           <TableCell className="text-right">
-                            <Button variant="ghost" size="icon">
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={() => navigate(`/admin/users/tenant/${user.id}`)}
+                            >
                               <Eye className="h-4 w-4" />
                             </Button>
                           </TableCell>
@@ -186,7 +190,11 @@ export default function UserDirectory() {
                             <StatusBadge status={user.status} />
                           </TableCell>
                           <TableCell className="text-right">
-                            <Button variant="ghost" size="icon">
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={() => navigate(`/admin/users/landlord/${user.id}`)}
+                            >
                               <Eye className="h-4 w-4" />
                             </Button>
                           </TableCell>
