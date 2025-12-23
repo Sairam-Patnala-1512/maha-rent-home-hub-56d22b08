@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import {
   ArrowLeft,
   BarChart3,
-  PieChart,
+  PieChart as PieChartIcon,
   TrendingUp,
   Download,
   Calendar,
@@ -19,6 +19,37 @@ import {
   FileCheck,
   AlertTriangle,
 } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+
+// Monthly trends data
+const monthlyTrendsData = [
+  { month: "Jul", properties: 145, users: 89, agreements: 67 },
+  { month: "Aug", properties: 178, users: 112, agreements: 89 },
+  { month: "Sep", properties: 156, users: 98, agreements: 78 },
+  { month: "Oct", properties: 189, users: 134, agreements: 102 },
+  { month: "Nov", properties: 212, users: 156, agreements: 118 },
+  { month: "Dec", properties: 234, users: 178, agreements: 134 },
+];
+
+// Distribution data
+const distributionData = [
+  { name: "Active", value: 456, color: "hsl(142, 76%, 36%)" },
+  { name: "Pending", value: 234, color: "hsl(45, 93%, 47%)" },
+  { name: "Expired", value: 123, color: "hsl(0, 84%, 60%)" },
+  { name: "Draft", value: 89, color: "hsl(215, 20%, 65%)" },
+];
 
 export default function Reports() {
   const navigate = useNavigate();
@@ -216,11 +247,26 @@ export default function Reports() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-48 flex items-center justify-center bg-muted/50 rounded-lg">
-                  <div className="text-center text-muted-foreground">
-                    <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                    <p>Chart visualization</p>
-                  </div>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={monthlyTrendsData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis dataKey="month" className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                      <YAxis className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'hsl(var(--card))',
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px',
+                          color: 'hsl(var(--foreground))',
+                        }}
+                      />
+                      <Legend />
+                      <Bar dataKey="properties" name="Properties" fill="hsl(142, 76%, 36%)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="users" name="Users" fill="hsl(215, 76%, 56%)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="agreements" name="Agreements" fill="hsl(280, 65%, 60%)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
@@ -228,16 +274,40 @@ export default function Reports() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <PieChart className="h-5 w-5" />
+                  <PieChartIcon className="h-5 w-5" />
                   Distribution Analysis
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-48 flex items-center justify-center bg-muted/50 rounded-lg">
-                  <div className="text-center text-muted-foreground">
-                    <PieChart className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                    <p>Chart visualization</p>
-                  </div>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={distributionData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={50}
+                        outerRadius={80}
+                        paddingAngle={3}
+                        dataKey="value"
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        labelLine={false}
+                      >
+                        {distributionData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'hsl(var(--card))',
+                          border: '1px solid hsl(var(--border))',
+                          borderRadius: '8px',
+                          color: 'hsl(var(--foreground))',
+                        }}
+                      />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
