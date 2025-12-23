@@ -18,12 +18,11 @@ import {
   TrendingUp,
   Clock,
   CheckCircle2,
-  Eye,
   Shield,
   Activity,
   BarChart3,
-  PieChart,
 } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from "recharts";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -57,11 +56,17 @@ export default function AdminDashboard() {
     { id: 5, action: "New tenant registered", user: "Vikram Singh", time: "2 hours ago", type: "user" },
   ];
 
-  const pendingApprovals = [
-    { id: "1", type: "Property", name: "2 BHK Bandra West", submittedBy: "Amit Patel", date: "Dec 12, 2024" },
-    { id: "2", type: "Landlord", name: "Priya Enterprises", submittedBy: "Priya Desai", date: "Dec 11, 2024" },
-    { id: "3", type: "Property", name: "1 RK Thane West", submittedBy: "Vikram Singh", date: "Dec 10, 2024" },
+  const propertyDistributionData = [
+    { name: "Mumbai City", properties: 3245, verified: 2890, pending: 355 },
+    { name: "Mumbai Suburban", properties: 2567, verified: 2234, pending: 333 },
+    { name: "Thane", properties: 1823, verified: 1567, pending: 256 },
+    { name: "Pune", properties: 1456, verified: 1298, pending: 158 },
+    { name: "Nagpur", properties: 876, verified: 756, pending: 120 },
+    { name: "Nashik", properties: 342, verified: 289, pending: 53 },
+    { name: "Aurangabad", properties: 233, verified: 198, pending: 35 },
   ];
+
+  const COLORS = ['hsl(var(--primary))', 'hsl(var(--success))', 'hsl(var(--warning))'];
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -211,82 +216,6 @@ export default function AdminDashboard() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle className="text-lg">Pending Approvals</CardTitle>
-                      <CardDescription>Items requiring verification</CardDescription>
-                    </div>
-                    <Button variant="ghost" size="sm" onClick={() => navigate("/admin/approvals")}>
-                      View All
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {pendingApprovals.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center justify-between p-4 rounded-lg border hover:shadow-md transition-shadow"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                            item.type === "Property" ? "bg-primary/10" : "bg-accent/10"
-                          }`}>
-                            {item.type === "Property" ? (
-                              <Building2 className="h-5 w-5 text-primary" />
-                            ) : (
-                              <Users className="h-5 w-5 text-accent" />
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-medium">{item.name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {item.type} • by {item.submittedBy} • {item.date}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toast({
-                                title: `Viewing ${item.type}`,
-                                description: `Opening details for ${item.name}`,
-                              });
-                              if (item.type === "Property") {
-                                navigate("/admin/inventory");
-                              } else {
-                                navigate("/admin/users");
-                              }
-                            }}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="success" 
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toast({
-                                title: "Approved Successfully",
-                                description: `${item.name} has been approved.`,
-                              });
-                            }}
-                          >
-                            Approve
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
                       <CardTitle className="text-lg">Property Distribution</CardTitle>
                       <CardDescription>GIS Map View of Maharashtra</CardDescription>
                     </div>
@@ -297,17 +226,41 @@ export default function AdminDashboard() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-64 bg-muted/50 rounded-lg flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-info/5" />
-                    <div className="text-center z-10">
-                      <Map className="h-16 w-16 text-muted-foreground/50 mx-auto mb-3" />
-                      <p className="text-muted-foreground">Interactive GIS Map</p>
-                      <p className="text-sm text-muted-foreground">Click to view full map</p>
-                    </div>
-                    <div className="absolute top-1/4 left-1/3 w-3 h-3 bg-primary rounded-full animate-pulse" />
-                    <div className="absolute top-1/3 left-1/2 w-4 h-4 bg-accent rounded-full animate-pulse" />
-                    <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-success rounded-full animate-pulse" />
-                    <div className="absolute bottom-1/3 right-1/3 w-3 h-3 bg-info rounded-full animate-pulse" />
+                  <div className="h-72">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={propertyDistributionData}
+                        margin={{ top: 10, right: 10, left: -10, bottom: 40 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground) / 0.2)" />
+                        <XAxis 
+                          dataKey="name" 
+                          tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                          angle={-35}
+                          textAnchor="end"
+                          height={60}
+                        />
+                        <YAxis 
+                          tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+                          tickFormatter={(value) => value >= 1000 ? `${(value/1000).toFixed(1)}k` : value}
+                        />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--card))', 
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '8px',
+                            fontSize: '12px'
+                          }}
+                          formatter={(value, name) => [value.toLocaleString(), name === 'verified' ? 'Verified' : name === 'pending' ? 'Pending' : 'Total']}
+                        />
+                        <Legend 
+                          wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
+                          formatter={(value) => value === 'verified' ? 'Verified Properties' : 'Pending Verification'}
+                        />
+                        <Bar dataKey="verified" stackId="a" fill="hsl(var(--success))" name="verified" radius={[0, 0, 0, 0]} />
+                        <Bar dataKey="pending" stackId="a" fill="hsl(var(--warning))" name="pending" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
                 </CardContent>
               </Card>
