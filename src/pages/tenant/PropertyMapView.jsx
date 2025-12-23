@@ -363,7 +363,7 @@ export default function PropertyMapView() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-background">
       <GovHeader
         userName="Rahul Sharma"
         userRole="tenant"
@@ -371,7 +371,7 @@ export default function PropertyMapView() {
         currentLanguage={language}
       />
 
-      <main className="flex-1 flex flex-col min-h-0 relative">
+      <main className="relative" style={{ minHeight: 'calc(100vh - 80px)' }}>
         {/* Premium Header Bar */}
         <div className="absolute top-0 left-0 right-0 z-40 bg-gradient-to-b from-background via-background/95 to-transparent pb-8 pointer-events-none">
           <div className="pointer-events-auto bg-card/95 backdrop-blur-xl border-b border-border/50 shadow-lg">
