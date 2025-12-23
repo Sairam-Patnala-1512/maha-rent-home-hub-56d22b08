@@ -148,6 +148,14 @@ export function GovHeader({
                 >
                   Dashboard
                 </Link>
+                {userRole === 'admin' && (
+                  <Link 
+                    to="/admin/inventory"
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Inventory
+                  </Link>
+                )}
                 {userRole === 'tenant' && (
                   <Link 
                     to="/tenant/properties"
@@ -292,6 +300,15 @@ export function GovHeader({
                 >
                   Dashboard
                 </Link>
+                {userRole === 'admin' && (
+                  <Link
+                    to="/admin/inventory"
+                    className="block py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Inventory
+                  </Link>
+                )}
                 {userRole === 'tenant' && (
                   <Link
                     to="/tenant/properties"
