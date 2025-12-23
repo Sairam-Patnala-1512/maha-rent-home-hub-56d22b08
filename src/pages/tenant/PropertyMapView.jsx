@@ -188,7 +188,7 @@ export default function PropertyMapView() {
   const zoomScale = 1 + (zoomLevel - 12) * 0.1;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
       <GovHeader
         userName="Rahul Sharma"
         userRole="tenant"
@@ -196,9 +196,9 @@ export default function PropertyMapView() {
         currentLanguage={language}
       />
 
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col min-h-0">
         {/* Header Bar */}
-        <div className="bg-card border-b px-4 py-3">
+        <div className="bg-card border-b px-4 py-3 flex-shrink-0">
           <div className="container mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={() => navigate("/tenant/properties")}>
@@ -226,38 +226,142 @@ export default function PropertyMapView() {
           </div>
         </div>
 
-        {/* Map Container */}
+        {/* Map Container - Full Height */}
         <div className="flex-1 relative overflow-hidden" onClick={handleMapClick}>
-          {/* Mock Map Background */}
+          {/* Maharashtra State Map Background */}
           <div 
             data-map-background
             className={cn(
-              "absolute inset-0 bg-gradient-to-br from-primary/5 via-muted/30 to-primary/10 transition-transform duration-300",
+              "absolute inset-0 transition-transform duration-500 ease-out",
               isZooming && "scale-[1.02]"
             )}
             style={{ transform: `scale(${zoomScale})` }}
           >
-            {/* Grid lines to simulate map */}
-            <div className="absolute inset-0 opacity-20">
+            {/* Base Map Layer - Neutral terrain */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[hsl(45,15%,92%)] via-[hsl(45,12%,88%)] to-[hsl(45,10%,85%)]" />
+            
+            {/* Maharashtra State Outline SVG */}
+            <svg 
+              viewBox="0 0 800 600" 
+              className="absolute inset-0 w-full h-full"
+              preserveAspectRatio="xMidYMid slice"
+            >
+              {/* State Boundary */}
+              <path
+                d="M150,100 Q200,80 280,90 L350,70 Q400,85 450,75 L520,95 Q560,90 600,110 L650,130 Q680,160 700,200 L720,280 Q710,340 680,400 L650,450 Q600,480 550,490 L480,500 Q420,510 360,495 L280,480 Q220,460 180,420 L140,360 Q110,300 120,240 L130,180 Q140,140 150,100 Z"
+                fill="none"
+                stroke="hsl(var(--muted-foreground) / 0.3)"
+                strokeWidth="3"
+                strokeDasharray="8,4"
+              />
+              
+              {/* Major Districts - Subtle fills */}
+              <path
+                d="M350,150 Q400,140 450,160 L480,200 Q470,250 440,280 L380,290 Q340,270 330,230 L340,180 Q345,160 350,150 Z"
+                fill="hsl(var(--primary) / 0.05)"
+                stroke="hsl(var(--muted-foreground) / 0.15)"
+                strokeWidth="1"
+              />
+              <path
+                d="M200,280 Q250,260 300,280 L340,330 Q330,380 290,400 L230,390 Q190,360 200,310 L200,280 Z"
+                fill="hsl(var(--primary) / 0.03)"
+                stroke="hsl(var(--muted-foreground) / 0.15)"
+                strokeWidth="1"
+              />
+              <path
+                d="M480,300 Q530,280 580,310 L600,370 Q580,420 540,440 L480,430 Q450,400 460,350 L480,300 Z"
+                fill="hsl(var(--primary) / 0.04)"
+                stroke="hsl(var(--muted-foreground) / 0.15)"
+                strokeWidth="1"
+              />
+              
+              {/* Major Highways */}
+              <path
+                d="M180,200 Q280,220 380,200 Q480,180 580,220 L680,260"
+                fill="none"
+                stroke="hsl(35,80%,55%)"
+                strokeWidth="3"
+                opacity="0.6"
+              />
+              <path
+                d="M300,120 Q340,200 360,300 Q380,400 400,480"
+                fill="none"
+                stroke="hsl(35,80%,55%)"
+                strokeWidth="3"
+                opacity="0.6"
+              />
+              <path
+                d="M500,140 Q520,240 540,340 Q560,420 550,500"
+                fill="none"
+                stroke="hsl(35,70%,50%)"
+                strokeWidth="2"
+                opacity="0.5"
+              />
+              
+              {/* Rivers */}
+              <path
+                d="M120,320 Q200,300 280,320 Q360,340 440,310 Q520,280 600,300"
+                fill="none"
+                stroke="hsl(200,50%,70%)"
+                strokeWidth="2"
+                opacity="0.5"
+              />
+              <path
+                d="M350,100 Q370,180 380,260 Q400,340 380,420"
+                fill="none"
+                stroke="hsl(200,50%,70%)"
+                strokeWidth="1.5"
+                opacity="0.4"
+              />
+              
+              {/* City Labels */}
+              <g className="text-[10px] fill-muted-foreground/60 font-medium">
+                <text x="380" y="170">Mumbai</text>
+                <text x="250" y="320">Pune</text>
+                <text x="520" y="250">Nashik</text>
+                <text x="550" y="380">Aurangabad</text>
+                <text x="220" y="420">Kolhapur</text>
+                <text x="600" y="180">Nagpur</text>
+                <text x="450" y="130">Thane</text>
+              </g>
+              
+              {/* City Markers */}
+              <circle cx="400" cy="180" r="6" fill="hsl(var(--primary))" opacity="0.4" />
+              <circle cx="270" cy="330" r="5" fill="hsl(var(--primary))" opacity="0.3" />
+              <circle cx="540" cy="260" r="4" fill="hsl(var(--primary))" opacity="0.3" />
+              <circle cx="570" cy="390" r="4" fill="hsl(var(--primary))" opacity="0.3" />
+              <circle cx="240" cy="430" r="4" fill="hsl(var(--primary))" opacity="0.3" />
+              <circle cx="620" cy="190" r="5" fill="hsl(var(--primary))" opacity="0.3" />
+            </svg>
+            
+            {/* Grid Overlay - Subtle coordinate lines */}
+            <div className="absolute inset-0 opacity-10">
               <div className="h-full w-full" style={{
                 backgroundImage: `
-                  linear-gradient(to right, hsl(var(--muted-foreground) / 0.1) 1px, transparent 1px),
-                  linear-gradient(to bottom, hsl(var(--muted-foreground) / 0.1) 1px, transparent 1px)
+                  linear-gradient(to right, hsl(var(--muted-foreground) / 0.15) 1px, transparent 1px),
+                  linear-gradient(to bottom, hsl(var(--muted-foreground) / 0.15) 1px, transparent 1px)
                 `,
-                backgroundSize: `${50 / zoomScale}px ${50 / zoomScale}px`
+                backgroundSize: `${80 / zoomScale}px ${80 / zoomScale}px`
               }} />
             </div>
             
-            {/* Simulated roads */}
-            <div className="absolute top-1/2 left-0 right-0 h-2 bg-muted-foreground/10 transform -translate-y-1/2" />
-            <div className="absolute top-0 bottom-0 left-1/3 w-2 bg-muted-foreground/10" />
-            <div className="absolute top-0 bottom-0 right-1/4 w-1 bg-muted-foreground/5" />
-            <div className="absolute top-1/4 left-0 right-0 h-1 bg-muted-foreground/5" />
+            {/* Terrain Texture Overlay */}
+            <div 
+              className="absolute inset-0 opacity-[0.03]"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+                backgroundSize: '200px 200px'
+              }}
+            />
+            
+            {/* Vignette Effect for depth */}
+            <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-background/20" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-transparent to-background/30" />
           </div>
 
           {/* Map attribution */}
-          <div className="absolute bottom-2 right-2 text-xs text-muted-foreground bg-card/80 px-2 py-1 rounded z-10">
-            Map data © MHADA Portal (Demo)
+          <div className="absolute bottom-4 right-4 text-xs text-muted-foreground/80 bg-card/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm z-10 border border-border/50">
+            <span className="font-medium">Maharashtra, India</span> • MHADA Portal (Demo)
           </div>
 
           {/* Empty State */}
