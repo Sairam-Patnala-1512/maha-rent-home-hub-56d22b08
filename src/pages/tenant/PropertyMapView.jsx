@@ -371,7 +371,7 @@ export default function PropertyMapView() {
         currentLanguage={language}
       />
 
-      <main className="relative" style={{ minHeight: 'calc(100vh - 80px)' }}>
+      <main className="flex-1 relative flex flex-col" style={{ minHeight: 'calc(100vh - 140px)' }}>
         {/* Premium Header Bar */}
         <div className="absolute top-0 left-0 right-0 z-40 bg-gradient-to-b from-background via-background/95 to-transparent pb-8 pointer-events-none">
           <div className="pointer-events-auto bg-card/95 backdrop-blur-xl border-b border-border/50 shadow-lg">
@@ -439,7 +439,7 @@ export default function PropertyMapView() {
         {/* Full-Screen Map Canvas */}
         <div 
           className={cn(
-            "flex-1 relative overflow-hidden cursor-grab select-none",
+            "absolute inset-0 overflow-hidden cursor-grab select-none",
             isPanning && "cursor-grabbing"
           )}
           onClick={handleMapClick}
