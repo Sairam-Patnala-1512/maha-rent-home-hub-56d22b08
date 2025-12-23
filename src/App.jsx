@@ -43,6 +43,7 @@ import LandlordVerification from './pages/landlord/LandlordVerification.jsx';
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import GISMapView from './pages/admin/GISMapView.jsx';
 import InventoryList from './pages/admin/InventoryList.jsx';
+import AdminPropertyDetail from './pages/admin/PropertyDetail.jsx';
 import ApplicationsMonitoring from './pages/admin/ApplicationsMonitoring.jsx';
 import UserDirectory from './pages/admin/UserDirectory.jsx';
 import AgreementRepository from './pages/admin/AgreementRepository.jsx';
@@ -106,6 +107,7 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/map" element={<GISMapView />} />
             <Route path="/admin/inventory" element={<InventoryList />} />
+            <Route path="/admin/properties/:propertyId" element={<AdminPropertyDetail />} />
             <Route path="/admin/applications" element={<ApplicationsMonitoring />} />
             <Route path="/admin/users" element={<UserDirectory />} />
             <Route path="/admin/agreements" element={<AgreementRepository />} />
