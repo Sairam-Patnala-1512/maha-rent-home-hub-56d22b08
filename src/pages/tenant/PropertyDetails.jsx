@@ -415,7 +415,7 @@ The semi-furnished setup includes essential furniture, modular kitchen with chim
                           </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                          <Calendar className="h-5 w-5 text-muted-foreground" />
+                          <CalendarIcon className="h-5 w-5 text-muted-foreground" />
                           <div>
                             <p className="text-xs text-muted-foreground">Property Age</p>
                             <p className="font-medium">{property.age}</p>
