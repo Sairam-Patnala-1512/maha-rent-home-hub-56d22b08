@@ -197,7 +197,11 @@ export default function MyAgreements() {
                             </Button>
                           ) : (
                             <>
-                              <Button variant="outline" size="sm">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => navigate(`/tenant/agreements/${agreement.id}/preview`)}
+                              >
                                 <Eye className="h-4 w-4 mr-1" />
                                 View
                               </Button>
