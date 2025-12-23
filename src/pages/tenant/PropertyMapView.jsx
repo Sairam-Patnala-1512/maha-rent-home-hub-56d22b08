@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   ArrowLeft,
   MapPin,
   Bed,
@@ -24,6 +31,8 @@ import {
   Home,
   TrendingUp,
   Building2,
+  Filter,
+  SlidersHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -41,10 +50,47 @@ export default function PropertyMapView() {
   const [showDensity, setShowDensity] = useState(true);
   const [isPanning, setIsPanning] = useState(false);
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+  const [showFilters, setShowFilters] = useState(false);
+  
+  // Filter states
+  const [selectedLocation, setSelectedLocation] = useState("all");
+  const [selectedPropertyType, setSelectedPropertyType] = useState("all");
+  const [selectedBudget, setSelectedBudget] = useState("any");
+  const [selectedBHK, setSelectedBHK] = useState([]);
+  const [selectedEligibility, setSelectedEligibility] = useState([]);
   
   const CLUSTER_ZOOM_THRESHOLD = 13;
   const MIN_ZOOM = 8;
   const MAX_ZOOM = 18;
+
+  // Filter options
+  const localities = [
+    { value: "all", label: "All Locations" },
+    { value: "mumbai", label: "Mumbai" },
+    { value: "thane", label: "Thane" },
+    { value: "pune", label: "Pune" },
+    { value: "navi-mumbai", label: "Navi Mumbai" },
+  ];
+
+  const propertyTypes = [
+    { value: "all", label: "All Types" },
+    { value: "apartment", label: "Apartment" },
+    { value: "studio", label: "Studio" },
+    { value: "room", label: "Room" },
+    { value: "house", label: "House" },
+    { value: "penthouse", label: "Penthouse" },
+  ];
+
+  const budgetRanges = [
+    { value: "any", label: "Any Budget" },
+    { value: "under-10k", label: "Under ₹10K" },
+    { value: "10k-25k", label: "₹10K - ₹25K" },
+    { value: "25k-50k", label: "₹25K - ₹50K" },
+    { value: "50k-plus", label: "₹50K+" },
+  ];
+
+  const bhkOptions = ["1 RK", "1 BHK", "2 BHK", "3 BHK", "3+ BHK"];
+  const eligibilityCategories = ["EWS", "Student", "Migrant", "Senior Citizen", "General"];
 
   const properties = [
     {
@@ -185,17 +231,98 @@ export default function PropertyMapView() {
     },
   ];
 
-  // Calculate visible properties based on zoom and pan
+  // Get active filter count
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (selectedLocation !== "all") count++;
+    if (selectedPropertyType !== "all") count++;
+    if (selectedBudget !== "any") count++;
+    count += selectedBHK.length;
+    count += selectedEligibility.length;
+    return count;
+  }, [selectedLocation, selectedPropertyType, selectedBudget, selectedBHK, selectedEligibility]);
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSelectedLocation("all");
+    setSelectedPropertyType("all");
+    setSelectedBudget("any");
+    setSelectedBHK([]);
+    setSelectedEligibility([]);
+  };
+
+  // Toggle BHK selection
+  const toggleBHK = (bhk) => {
+    setSelectedBHK(prev => 
+      prev.includes(bhk) ? prev.filter(b => b !== bhk) : [...prev, bhk]
+    );
+  };
+
+  // Toggle eligibility selection
+  const toggleEligibility = (cat) => {
+    setSelectedEligibility(prev => 
+      prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
+    );
+  };
+
+  // Filter properties based on selections
+  const filteredProperties = useMemo(() => {
+    return properties.filter((p) => {
+      // Location filter
+      if (selectedLocation !== "all") {
+        const cityMatch = p.city.toLowerCase().replace(/\s+/g, "-");
+        if (cityMatch !== selectedLocation) return false;
+      }
+      
+      // Property type filter
+      if (selectedPropertyType !== "all") {
+        if (p.propertyType.toLowerCase() !== selectedPropertyType) return false;
+      }
+      
+      // Budget filter
+      if (selectedBudget !== "any") {
+        const rent = p.rent;
+        if (selectedBudget === "under-10k" && rent >= 10000) return false;
+        if (selectedBudget === "10k-25k" && (rent < 10000 || rent > 25000)) return false;
+        if (selectedBudget === "25k-50k" && (rent < 25000 || rent > 50000)) return false;
+        if (selectedBudget === "50k-plus" && rent < 50000) return false;
+      }
+      
+      // BHK filter
+      if (selectedBHK.length > 0) {
+        const bedrooms = p.bedrooms;
+        const bhkMatch = selectedBHK.some(bhk => {
+          if (bhk === "1 RK") return bedrooms === 1 && p.area < 400;
+          if (bhk === "1 BHK") return bedrooms === 1;
+          if (bhk === "2 BHK") return bedrooms === 2;
+          if (bhk === "3 BHK") return bedrooms === 3;
+          if (bhk === "3+ BHK") return bedrooms > 3;
+          return false;
+        });
+        if (!bhkMatch) return false;
+      }
+      
+      // Eligibility filter
+      if (selectedEligibility.length > 0) {
+        const hasMatch = selectedEligibility.some(cat => p.eligibility.includes(cat));
+        if (!hasMatch) return false;
+      }
+      
+      return true;
+    });
+  }, [selectedLocation, selectedPropertyType, selectedBudget, selectedBHK, selectedEligibility]);
+
+  // Calculate visible properties based on zoom, pan, and filters
   const visibleProperties = useMemo(() => {
     const viewRadius = Math.max(35, 100 - (zoomLevel - MIN_ZOOM) * 6);
-    return properties.filter((p) => {
+    return filteredProperties.filter((p) => {
       const distance = Math.sqrt(
         Math.pow(p.coordinates.top - mapCenter.y, 2) + 
         Math.pow(p.coordinates.left - mapCenter.x, 2)
       );
       return distance < viewRadius;
     });
-  }, [zoomLevel, mapCenter]);
+  }, [zoomLevel, mapCenter, filteredProperties]);
 
   // Generate clusters
   const { clusters, totalInClusters } = useMemo(() => {
@@ -411,6 +538,25 @@ export default function PropertyMapView() {
                 </div>
 
                 <div className="flex items-center gap-2">
+                  {/* Filter Toggle Button */}
+                  <Button
+                    variant={showFilters ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="gap-1.5 relative"
+                  >
+                    <SlidersHorizontal className="h-4 w-4" />
+                    <span className="hidden sm:inline">Filters</span>
+                    {activeFilterCount > 0 && (
+                      <Badge 
+                        variant="secondary" 
+                        className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground"
+                      >
+                        {activeFilterCount}
+                      </Badge>
+                    )}
+                  </Button>
+
                   <Button
                     variant={mapStyle === 'default' ? 'ghost' : 'outline'}
                     size="sm"
@@ -434,6 +580,170 @@ export default function PropertyMapView() {
               </div>
             </div>
           </div>
+
+          {/* Floating Filter Panel */}
+          {showFilters && (
+            <div className="pointer-events-auto mt-2 mx-auto max-w-5xl px-4">
+              <Card className="bg-card/98 backdrop-blur-xl border-border/50 shadow-xl">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Filter className="h-4 w-4 text-primary" />
+                      <span className="font-medium text-sm">Filter Properties</span>
+                      {activeFilterCount > 0 && (
+                        <Badge variant="secondary" className="text-xs">
+                          {activeFilterCount} active
+                        </Badge>
+                      )}
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-xs text-muted-foreground h-7"
+                      onClick={clearAllFilters}
+                      disabled={activeFilterCount === 0}
+                    >
+                      Clear All
+                    </Button>
+                  </div>
+
+                  {/* Filter Row 1 - Dropdowns */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                    <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                      <SelectTrigger className="h-9 bg-background">
+                        <MapPin className="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+                        <SelectValue placeholder="Location" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover z-[100]">
+                        {localities.map((loc) => (
+                          <SelectItem key={loc.value} value={loc.value}>
+                            {loc.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select value={selectedPropertyType} onValueChange={setSelectedPropertyType}>
+                      <SelectTrigger className="h-9 bg-background">
+                        <Building2 className="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+                        <SelectValue placeholder="Property Type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover z-[100]">
+                        {propertyTypes.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select value={selectedBudget} onValueChange={setSelectedBudget}>
+                      <SelectTrigger className="h-9 bg-background">
+                        <TrendingUp className="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+                        <SelectValue placeholder="Budget" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover z-[100]">
+                        {budgetRanges.map((range) => (
+                          <SelectItem key={range.value} value={range.value}>
+                            {range.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Filter Row 2 - BHK Type */}
+                  <div className="mb-4">
+                    <span className="text-xs font-medium text-muted-foreground mb-2 block">BHK Type</span>
+                    <div className="flex flex-wrap gap-2">
+                      {bhkOptions.map((bhk) => (
+                        <Button
+                          key={bhk}
+                          variant={selectedBHK.includes(bhk) ? "default" : "outline"}
+                          size="sm"
+                          className="h-7 text-xs"
+                          onClick={() => toggleBHK(bhk)}
+                        >
+                          {bhk}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Filter Row 3 - Eligibility */}
+                  <div>
+                    <span className="text-xs font-medium text-muted-foreground mb-2 block">Eligibility Category</span>
+                    <div className="flex flex-wrap gap-2">
+                      {eligibilityCategories.map((cat) => (
+                        <Button
+                          key={cat}
+                          variant={selectedEligibility.includes(cat) ? "default" : "outline"}
+                          size="sm"
+                          className="h-7 text-xs"
+                          onClick={() => toggleEligibility(cat)}
+                        >
+                          {cat}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Active Filters Summary */}
+                  {activeFilterCount > 0 && (
+                    <div className="mt-4 pt-3 border-t border-border/50">
+                      <div className="flex flex-wrap gap-2">
+                        {selectedLocation !== "all" && (
+                          <Badge variant="secondary" className="gap-1 pr-1">
+                            {localities.find(l => l.value === selectedLocation)?.label}
+                            <X 
+                              className="h-3 w-3 cursor-pointer hover:text-destructive" 
+                              onClick={() => setSelectedLocation("all")}
+                            />
+                          </Badge>
+                        )}
+                        {selectedPropertyType !== "all" && (
+                          <Badge variant="secondary" className="gap-1 pr-1">
+                            {propertyTypes.find(t => t.value === selectedPropertyType)?.label}
+                            <X 
+                              className="h-3 w-3 cursor-pointer hover:text-destructive" 
+                              onClick={() => setSelectedPropertyType("all")}
+                            />
+                          </Badge>
+                        )}
+                        {selectedBudget !== "any" && (
+                          <Badge variant="secondary" className="gap-1 pr-1">
+                            {budgetRanges.find(b => b.value === selectedBudget)?.label}
+                            <X 
+                              className="h-3 w-3 cursor-pointer hover:text-destructive" 
+                              onClick={() => setSelectedBudget("any")}
+                            />
+                          </Badge>
+                        )}
+                        {selectedBHK.map((bhk) => (
+                          <Badge key={bhk} variant="secondary" className="gap-1 pr-1">
+                            {bhk}
+                            <X 
+                              className="h-3 w-3 cursor-pointer hover:text-destructive" 
+                              onClick={() => toggleBHK(bhk)}
+                            />
+                          </Badge>
+                        ))}
+                        {selectedEligibility.map((cat) => (
+                          <Badge key={cat} variant="secondary" className="gap-1 pr-1">
+                            {cat}
+                            <X 
+                              className="h-3 w-3 cursor-pointer hover:text-destructive" 
+                              onClick={() => toggleEligibility(cat)}
+                            />
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
 
         {/* Full-Screen Map Canvas */}
