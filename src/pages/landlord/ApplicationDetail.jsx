@@ -22,6 +22,7 @@ import {
   FileText,
   Clock,
 } from "lucide-react";
+import { TRSCard } from "@/components/shared/TenantReliabilityScore";
 
 export default function ApplicationDetail() {
   const { applicationId } = useParams();
@@ -237,6 +238,8 @@ export default function ApplicationDetail() {
 
             {/* Sidebar */}
             <div className="space-y-6">
+              {/* Tenant Reliability Score */}
+              <TRSCard tenantId={application.id} />
               {/* Document Verification */}
               <Card>
                 <CardHeader>

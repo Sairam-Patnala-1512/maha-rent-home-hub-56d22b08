@@ -19,6 +19,7 @@ import {
   Calendar,
   Shield,
 } from "lucide-react";
+import { TRSBadge } from "@/components/shared/TenantReliabilityScore";
 
 export default function ApplicationsList() {
   const navigate = useNavigate();
@@ -178,6 +179,7 @@ export default function ApplicationsList() {
                           </div>
 
                           <div className="flex flex-wrap items-center gap-4">
+                            <TRSBadge tenantId={app.id} />
                             <div className="text-sm">
                               <p className="text-muted-foreground">Applied</p>
                               <p className="font-medium">{app.appliedDate}</p>
