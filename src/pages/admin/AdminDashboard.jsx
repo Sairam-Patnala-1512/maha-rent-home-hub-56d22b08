@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 import {
   Building2,
   Users,
@@ -26,6 +27,7 @@ import {
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [language, setLanguage] = useState("en");
 
   const stats = {
@@ -242,10 +244,36 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toast({
+                                title: `Viewing ${item.type}`,
+                                description: `Opening details for ${item.name}`,
+                              });
+                              if (item.type === "Property") {
+                                navigate("/admin/inventory");
+                              } else {
+                                navigate("/admin/users");
+                              }
+                            }}
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="success" size="sm">
+                          <Button 
+                            variant="success" 
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toast({
+                                title: "Approved Successfully",
+                                description: `${item.name} has been approved.`,
+                              });
+                            }}
+                          >
                             Approve
                           </Button>
                         </div>

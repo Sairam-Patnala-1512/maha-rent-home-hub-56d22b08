@@ -50,6 +50,8 @@ import GrievanceManagement from './pages/admin/GrievanceManagement.jsx';
 import AuditLogs from './pages/admin/AuditLogs.jsx';
 import AdminProfile from './pages/admin/AdminProfile.jsx';
 import AdminSettings from './pages/admin/AdminSettings.jsx';
+import Reports from './pages/admin/Reports.jsx';
+import PendingApprovals from './pages/admin/PendingApprovals.jsx';
 // Grievance Pages
 import GrievancePortal from './pages/grievance/GrievancePortal.jsx';
 import RaiseGrievance from './pages/grievance/RaiseGrievance.jsx';
@@ -111,6 +113,8 @@ function App() {
             <Route path="/admin/audit-logs" element={<AuditLogs />} />
             <Route path="/admin/profile" element={<AdminProfile />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="/admin/reports" element={<Reports />} />
+            <Route path="/admin/approvals" element={<PendingApprovals />} />
             
             {/* Grievance Routes */}
             <Route path="/grievance" element={<GrievancePortal />} />
