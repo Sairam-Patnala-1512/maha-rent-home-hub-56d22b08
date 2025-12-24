@@ -14,6 +14,8 @@ const statusConfig = {
   occupied: { label: 'Occupied', variant: 'info', icon: Home },
   vacant: { label: 'Vacant', variant: 'success', icon: Home },
   submitted: { label: 'Submitted', variant: 'info', icon: FileCheck },
+  active: { label: 'Active', variant: 'success', icon: CheckCircle2 },
+  expired: { label: 'Expired', variant: 'error', icon: XCircle },
 };
 
 export function StatusBadge({ status, showIcon = true, className }) {
