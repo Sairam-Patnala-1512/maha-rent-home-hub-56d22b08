@@ -144,7 +144,11 @@ export default function AgreementRepository() {
                         <StatusBadge status={agr.status === "active" ? "approved" : agr.status} />
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="icon">
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => navigate(`/admin/agreements/${agr.id}`)}
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
                         <Button variant="ghost" size="icon">
