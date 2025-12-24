@@ -48,12 +48,15 @@ import ApplicationsMonitoring from './pages/admin/ApplicationsMonitoring.jsx';
 import UserDirectory from './pages/admin/UserDirectory.jsx';
 import UserDetail from './pages/admin/UserDetail.jsx';
 import AgreementRepository from './pages/admin/AgreementRepository.jsx';
+import AgreementDetail from './pages/admin/AgreementDetail.jsx';
 import GrievanceManagement from './pages/admin/GrievanceManagement.jsx';
+import GrievanceDetail from './pages/admin/GrievanceDetail.jsx';
 import AuditLogs from './pages/admin/AuditLogs.jsx';
 import AdminProfile from './pages/admin/AdminProfile.jsx';
 import AdminSettings from './pages/admin/AdminSettings.jsx';
 import Reports from './pages/admin/Reports.jsx';
 import PendingApprovals from './pages/admin/PendingApprovals.jsx';
+import ApprovalDetail from './pages/admin/ApprovalDetail.jsx';
 // Grievance Pages
 import GrievancePortal from './pages/grievance/GrievancePortal.jsx';
 import RaiseGrievance from './pages/grievance/RaiseGrievance.jsx';
@@ -113,12 +116,15 @@ function App() {
             <Route path="/admin/users" element={<UserDirectory />} />
             <Route path="/admin/users/:userType/:userId" element={<UserDetail />} />
             <Route path="/admin/agreements" element={<AgreementRepository />} />
+            <Route path="/admin/agreements/:agreementId" element={<AgreementDetail />} />
             <Route path="/admin/grievances" element={<GrievanceManagement />} />
+            <Route path="/admin/grievances/:grievanceId" element={<GrievanceDetail />} />
             <Route path="/admin/audit-logs" element={<AuditLogs />} />
             <Route path="/admin/profile" element={<AdminProfile />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
             <Route path="/admin/reports" element={<Reports />} />
             <Route path="/admin/approvals" element={<PendingApprovals />} />
+            <Route path="/admin/approvals/:approvalId" element={<ApprovalDetail />} />
             
             {/* Grievance Routes */}
             <Route path="/grievance" element={<GrievancePortal />} />

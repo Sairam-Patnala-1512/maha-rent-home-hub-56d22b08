@@ -21,6 +21,10 @@ import {
   Shield,
   Activity,
   BarChart3,
+  ClipboardCheck,
+  Eye,
+  UserCheck,
+  Home,
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from "recharts";
 
@@ -31,10 +35,13 @@ export default function AdminDashboard() {
 
   const stats = {
     totalProperties: 10542,
+    verifiedProperties: 9234,
+    unverifiedProperties: 1308,
     activeListings: 7823,
     registeredTenants: 52341,
     registeredLandlords: 8234,
     activeAgreements: 25421,
+    expiredAgreements: 3456,
     pendingVerifications: 234,
     openGrievances: 45,
     resolvedGrievances: 1234,
@@ -64,6 +71,12 @@ export default function AdminDashboard() {
     { name: "Nagpur", properties: 876, verified: 756, pending: 120 },
     { name: "Nashik", properties: 342, verified: 289, pending: 53 },
     { name: "Aurangabad", properties: 233, verified: 198, pending: 35 },
+  ];
+
+  const pendingApprovals = [
+    { id: "1", type: "Property", name: "2 BHK Bandra West", submittedBy: "Amit Patel", date: "Dec 12, 2024" },
+    { id: "2", type: "Landlord", name: "Priya Enterprises", submittedBy: "Priya Desai", date: "Dec 11, 2024" },
+    { id: "3", type: "Tenant", name: "Vikram Singh", submittedBy: "Vikram Singh", date: "Dec 10, 2024" },
   ];
 
   const COLORS = ['hsl(var(--primary))', 'hsl(var(--success))', 'hsl(var(--warning))'];
@@ -100,26 +113,28 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {/* Main Stats - Row 1 */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <StatsCard
+              title="Total Citizens"
+              value={stats.registeredTenants.toLocaleString()}
+              subtitle="Registered tenants"
+              icon={Users}
+              trend={{ value: 12, isPositive: true }}
+            />
+            <StatsCard
+              title="Total Landlords"
+              value={stats.registeredLandlords.toLocaleString()}
+              subtitle="Property owners"
+              icon={UserCheck}
+              variant="primary"
+              trend={{ value: 8, isPositive: true }}
+            />
             <StatsCard
               title="Total Properties"
               value={stats.totalProperties.toLocaleString()}
               subtitle={`${stats.activeListings.toLocaleString()} active listings`}
               icon={Building2}
-              trend={{ value: 8, isPositive: true }}
-            />
-            <StatsCard
-              title="Registered Users"
-              value={(stats.registeredTenants + stats.registeredLandlords).toLocaleString()}
-              subtitle={`${stats.registeredTenants.toLocaleString()} tenants`}
-              icon={Users}
-              variant="primary"
-            />
-            <StatsCard
-              title="Active Agreements"
-              value={stats.activeAgreements.toLocaleString()}
-              subtitle="Digital rental agreements"
-              icon={FileText}
               variant="accent"
             />
             <StatsCard
@@ -130,8 +145,57 @@ export default function AdminDashboard() {
             />
           </div>
 
+          {/* Stats Row 2 - Verified/Unverified & Agreements */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <Card className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Verified Properties</p>
+                  <p className="text-2xl font-bold text-success">{stats.verifiedProperties.toLocaleString()}</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
+                  <CheckCircle2 className="h-5 w-5 text-success" />
+                </div>
+              </div>
+            </Card>
+            <Card className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Unverified Properties</p>
+                  <p className="text-2xl font-bold text-warning">{stats.unverifiedProperties.toLocaleString()}</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-warning" />
+                </div>
+              </div>
+            </Card>
+            <Card className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Active Agreements</p>
+                  <p className="text-2xl font-bold text-primary">{stats.activeAgreements.toLocaleString()}</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <FileText className="h-5 w-5 text-primary" />
+                </div>
+              </div>
+            </Card>
+            <Card className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Expired Agreements</p>
+                  <p className="text-2xl font-bold text-destructive">{stats.expiredAgreements.toLocaleString()}</p>
+                </div>
+                <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
+                  <FileText className="h-5 w-5 text-destructive" />
+                </div>
+              </div>
+            </Card>
+          </div>
+
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
+              {/* Platform Metrics */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Platform Metrics</CardTitle>
@@ -212,6 +276,7 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
+              {/* Property Distribution */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Property Distribution</CardTitle>
@@ -259,6 +324,54 @@ export default function AdminDashboard() {
             </div>
 
             <div className="space-y-6">
+              {/* Pending Approvals Widget */}
+              <Card className="border-warning/50">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <ClipboardCheck className="h-5 w-5 text-warning" />
+                      Pending Approvals
+                    </CardTitle>
+                    <span className="text-sm font-bold text-warning bg-warning/10 px-2 py-0.5 rounded">
+                      {stats.pendingVerifications}
+                    </span>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {pendingApprovals.map((item) => (
+                    <div 
+                      key={item.id} 
+                      className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors cursor-pointer"
+                      onClick={() => navigate(`/admin/approvals/${item.id}`)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded flex items-center justify-center ${
+                          item.type === 'Property' ? 'bg-primary/10' : 
+                          item.type === 'Landlord' ? 'bg-accent/10' : 'bg-info/10'
+                        }`}>
+                          {item.type === 'Property' ? <Building2 className="h-4 w-4 text-primary" /> :
+                           item.type === 'Landlord' ? <UserCheck className="h-4 w-4 text-accent-foreground" /> :
+                           <Users className="h-4 w-4 text-info" />}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">{item.name}</p>
+                          <p className="text-xs text-muted-foreground">{item.type} • {item.date}</p>
+                        </div>
+                      </div>
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                  ))}
+                  <Button 
+                    variant="govOutline" 
+                    className="w-full mt-2"
+                    onClick={() => navigate("/admin/approvals")}
+                  >
+                    View All Pending Approvals
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Quick Stats */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Quick Stats</CardTitle>
@@ -266,7 +379,7 @@ export default function AdminDashboard() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded bg-warning-light flex items-center justify-center">
+                      <div className="w-8 h-8 rounded bg-warning/10 flex items-center justify-center">
                         <Clock className="h-4 w-4 text-warning" />
                       </div>
                       <span className="text-sm">Pending Verifications</span>
@@ -275,7 +388,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded bg-destructive-light flex items-center justify-center">
+                      <div className="w-8 h-8 rounded bg-destructive/10 flex items-center justify-center">
                         <AlertTriangle className="h-4 w-4 text-destructive" />
                       </div>
                       <span className="text-sm">Open Grievances</span>
@@ -284,7 +397,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded bg-success-light flex items-center justify-center">
+                      <div className="w-8 h-8 rounded bg-success/10 flex items-center justify-center">
                         <CheckCircle2 className="h-4 w-4 text-success" />
                       </div>
                       <span className="text-sm">Resolved This Month</span>
@@ -294,6 +407,7 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
+              {/* Recent Activity */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -323,6 +437,7 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
+              {/* System Status */}
               <Card variant="success">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-4">

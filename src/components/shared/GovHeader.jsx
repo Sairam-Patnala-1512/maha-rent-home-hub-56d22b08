@@ -18,7 +18,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Globe, Menu, User, LogOut, Settings, Bell, X, ChevronDown, Phone, Search, Mic } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { 
+  Globe, Menu, User, LogOut, Settings, Bell, X, ChevronDown, Phone, Search, Mic,
+  LayoutDashboard, Building2, ClipboardCheck, BarChart3, Users, FileText, AlertTriangle, Home
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import mhadaLogo from '@/assets/mhada-logo.png';
 import indianEmblem from '@/assets/indian-emblem.jpg';
@@ -33,12 +43,13 @@ export function GovHeader({
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const roleLabels = {
     tenant: 'Tenant',
     landlord: 'Landlord',
-    admin: 'Administrator'
+    admin: 'MHADA Admin'
   };
 
   const roleDashboards = {
@@ -46,6 +57,16 @@ export function GovHeader({
     landlord: '/landlord/dashboard',
     admin: '/admin/dashboard'
   };
+
+  const adminNavItems = [
+    { label: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
+    { label: 'Inventory', icon: Building2, path: '/admin/inventory' },
+    { label: 'Pending Approvals', icon: ClipboardCheck, path: '/admin/approvals' },
+    { label: 'Reports', icon: BarChart3, path: '/admin/reports' },
+    { label: 'User Directory', icon: Users, path: '/admin/users' },
+    { label: 'Agreements', icon: FileText, path: '/admin/agreements' },
+    { label: 'Grievances', icon: AlertTriangle, path: '/admin/grievances' },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
@@ -142,35 +163,70 @@ export function GovHeader({
           <nav className="hidden md:flex items-center gap-4">
             {userName && userRole && (
               <>
-                <Link 
-                  to={roleDashboards[userRole]}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Dashboard
-                </Link>
-                {userRole === 'admin' && (
-                  <Link 
-                    to="/admin/inventory"
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Inventory
-                  </Link>
-                )}
-                {userRole === 'tenant' && (
-                  <Link 
-                    to="/tenant/properties"
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Properties
-                  </Link>
-                )}
-                {userRole === 'landlord' && (
-                  <Link 
-                    to="/landlord/properties"
-                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    My Properties
-                  </Link>
+                {userRole === 'admin' ? (
+                  /* Admin Navigation - Hamburger Menu */
+                  <Sheet open={adminMenuOpen} onOpenChange={setAdminMenuOpen}>
+                    <SheetTrigger asChild>
+                      <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                        <Menu className="h-4 w-4" />
+                        <span className="hidden lg:inline">Navigation</span>
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="w-72">
+                      <SheetHeader className="mb-6">
+                        <SheetTitle className="flex items-center gap-2 text-left">
+                          <img src={mhadaLogo} alt="MHADA" className="h-8" />
+                          <span className="text-sm">Admin Portal</span>
+                        </SheetTitle>
+                      </SheetHeader>
+                      <nav className="space-y-1">
+                        {adminNavItems.map((item) => (
+                          <button
+                            key={item.path}
+                            onClick={() => {
+                              navigate(item.path);
+                              setAdminMenuOpen(false);
+                            }}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                          >
+                            <item.icon className="h-5 w-5" />
+                            {item.label}
+                          </button>
+                        ))}
+                      </nav>
+                      <div className="absolute bottom-6 left-6 right-6">
+                        <div className="p-3 bg-muted/50 rounded-lg text-xs text-muted-foreground">
+                          <p className="font-medium text-foreground mb-1">PoC Disclaimer</p>
+                          <p>This is a demonstration environment. No real data is processed.</p>
+                        </div>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                ) : (
+                  <>
+                    <Link 
+                      to={roleDashboards[userRole]}
+                      className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Dashboard
+                    </Link>
+                    {userRole === 'tenant' && (
+                      <Link 
+                        to="/tenant/properties"
+                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        Properties
+                      </Link>
+                    )}
+                    {userRole === 'landlord' && (
+                      <Link 
+                        to="/landlord/properties"
+                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        My Properties
+                      </Link>
+                    )}
+                  </>
                 )}
               </>
             )}
@@ -268,7 +324,7 @@ export function GovHeader({
       <div
         className={cn(
           'md:hidden border-t overflow-hidden transition-all duration-200 bg-card',
-          mobileMenuOpen ? 'max-h-80' : 'max-h-0'
+          mobileMenuOpen ? 'max-h-[500px]' : 'max-h-0'
         )}
       >
         <div className="container mx-auto px-4 py-4 space-y-3">
@@ -290,37 +346,55 @@ export function GovHeader({
             <span>Helpline: 022-66405000</span>
           </div>
 
-          <nav className="space-y-2">
+          <nav className="space-y-1">
             {userName && userRole && (
               <>
-                <Link
-                  to={roleDashboards[userRole]}
-                  className="block py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                {userRole === 'admin' && (
-                  <Link
-                    to="/admin/inventory"
-                    className="block py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Inventory
-                  </Link>
-                )}
-                {userRole === 'tenant' && (
-                  <Link
-                    to="/tenant/properties"
-                    className="block py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Properties
-                  </Link>
+                {userRole === 'admin' ? (
+                  /* Admin Mobile Navigation */
+                  adminNavItems.map((item) => (
+                    <button
+                      key={item.path}
+                      onClick={() => {
+                        navigate(item.path);
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground"
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {item.label}
+                    </button>
+                  ))
+                ) : (
+                  <>
+                    <Link
+                      to={roleDashboards[userRole]}
+                      className="block py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    {userRole === 'tenant' && (
+                      <Link
+                        to="/tenant/properties"
+                        className="block py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Properties
+                      </Link>
+                    )}
+                  </>
                 )}
               </>
             )}
           </nav>
+
+          {/* PoC Disclaimer for Admin Mobile */}
+          {userRole === 'admin' && (
+            <div className="mt-4 p-3 bg-muted/50 rounded-lg text-xs text-muted-foreground">
+              <p className="font-medium text-foreground mb-1">PoC Disclaimer</p>
+              <p>This is a demonstration environment. No real data is processed.</p>
+            </div>
+          )}
         </div>
       </div>
     </header>
