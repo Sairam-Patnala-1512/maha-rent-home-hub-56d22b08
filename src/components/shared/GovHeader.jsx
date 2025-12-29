@@ -172,14 +172,25 @@ export function GovHeader({
                         <span className="hidden lg:inline">Navigation</span>
                       </Button>
                     </SheetTrigger>
-                    <SheetContent side="left" className="w-72">
-                      <SheetHeader className="mb-6">
-                        <SheetTitle className="flex items-center gap-2 text-left">
-                          <img src={mhadaLogo} alt="MHADA" className="h-8" />
-                          <span className="text-sm">Admin Portal</span>
-                        </SheetTitle>
-                      </SheetHeader>
-                      <nav className="space-y-1">
+                    <SheetContent 
+                      side="left" 
+                      className="w-[280px] sm:w-[320px] p-0 flex flex-col"
+                    >
+                      {/* Header */}
+                      <div className="p-6 pb-4 border-b bg-muted/30">
+                        <SheetHeader>
+                          <SheetTitle className="flex items-center gap-3 text-left">
+                            <img src={mhadaLogo} alt="MHADA" className="h-10" />
+                            <div>
+                              <span className="block text-base font-semibold">Admin Portal</span>
+                              <span className="block text-xs text-muted-foreground">MHADA Navigation</span>
+                            </div>
+                          </SheetTitle>
+                        </SheetHeader>
+                      </div>
+                      
+                      {/* Navigation Items */}
+                      <nav className="flex-1 overflow-y-auto p-4 space-y-1">
                         {adminNavItems.map((item) => (
                           <button
                             key={item.path}
@@ -187,14 +198,16 @@ export function GovHeader({
                               navigate(item.path);
                               setAdminMenuOpen(false);
                             }}
-                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                           >
-                            <item.icon className="h-5 w-5" />
-                            {item.label}
+                            <item.icon className="h-5 w-5 flex-shrink-0" />
+                            <span>{item.label}</span>
                           </button>
                         ))}
                       </nav>
-                      <div className="absolute bottom-6 left-6 right-6">
+                      
+                      {/* Footer Disclaimer */}
+                      <div className="p-4 border-t bg-muted/20">
                         <div className="p-3 bg-muted/50 rounded-lg text-xs text-muted-foreground">
                           <p className="font-medium text-foreground mb-1">PoC Disclaimer</p>
                           <p>This is a demonstration environment. No real data is processed.</p>
